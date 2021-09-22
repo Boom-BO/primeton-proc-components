@@ -1,4 +1,5 @@
 <template>
+  <!-- <transition name="fade"> -->
   <div class="primeton-dialog-mask" v-if="visible">
     <div class="primeton-dialog" :style="{ width: dialogWidth }">
       <i class="close-btn iconfont icon-pre-close" @click="closeDialog"></i>
@@ -13,6 +14,7 @@
       </div>
     </div>
   </div>
+  <!-- </transition> -->
 </template>
 
 <script>
@@ -97,13 +99,13 @@ export default {
     .content-wrapper {
       width: 100%;
       min-height: 200px;
-      padding: 15px 17px;
+      padding: 10px 17px;
       box-sizing: border-box;
     }
 
     .footer-wrapper {
       width: 100%;
-      padding: 0 0 12px 0;
+      padding: 0 0 10px 0;
       text-align: center;
 
       .u-button {
@@ -113,6 +115,13 @@ export default {
         }
       }
     }
+  }
+  ::v-deep .fade-enter-active,
+  .fade-leave-active {
+    transition: opacity 0.5s;
+  }
+  ::v-deep .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
   }
 }
 </style>

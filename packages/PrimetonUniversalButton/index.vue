@@ -271,6 +271,7 @@ export default {
 .u-button-wrapper {
   display: inline-block;
   .u-button {
+    display: inline-block;
     line-height: 1;
     white-space: nowrap;
     cursor: pointer;
@@ -334,13 +335,13 @@ export default {
     }
 
     &.button--small {
-      padding: 9px 15px;
+      padding: 7px 15px;
       font-size: 12px;
       border-radius: 3px;
     }
 
     &.button--mini {
-      padding: 7px 15px;
+      padding: 5px 15px;
       font-size: 12px;
       border-radius: 3px;
     }
