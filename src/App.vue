@@ -83,38 +83,38 @@ export default {
       const rootData = [
         {
           id: "1",
-          label: "普元信息技术有限公司",
-          type: "company",
+          name: "普元信息技术有限公司",
+          typeCode: "company",
           children: [
             [
               {
                 id: "1-1",
-                label: "济南政企部门",
-                type: "org",
+                name: "济南政企部门",
+                typeCode: "org",
               },
               {
                 id: "2-1",
-                label: "上海产品部",
-                type: "org",
+                name: "上海产品部",
+                typeCode: "org",
               },
             ],
           ],
         },
         {
           id: "2",
-          label: "普元信息技术有限公司1",
-          type: "company",
+          name: "普元信息技术有限公司1",
+          typeCode: "company",
           children: [
             [
               {
                 id: "1-1",
-                label: "济南政企部门",
-                type: "org",
+                name: "济南政企部门",
+                typeCode: "org",
               },
               {
                 id: "2-1",
-                label: "上海产品部",
-                type: "org",
+                name: "上海产品部",
+                typeCode: "org",
               },
             ],
           ],
@@ -132,43 +132,43 @@ export default {
         resolve([
           {
             id: "1-1",
-            label: "济南政企部门",
-            type: "org",
+            name: "济南政企部门",
+            typeCode: "org",
           },
           {
             id: "2-1",
-            label: "上海产品部",
-            type: "org",
+            name: "上海产品部",
+            typeCode: "org",
           },
         ]);
       } else if (node.data.id == "1-1") {
         resolve([
           {
-            label: "孟凡喜",
+            name: "孟凡喜",
             id: "1-1-1",
-            type: "person",
-            leaf: true,
+            typeCode: "emp",
+            isLeaf: true,
           },
           {
-            label: "傅胤龙",
+            name: "傅胤龙",
             id: "1-1-2",
-            type: "person",
-            leaf: true,
+            typeCode: "emp",
+            isLeaf: true,
           },
           {
-            label: "李文香",
+            name: "李文香",
             id: "1-1-3",
-            type: "person",
-            leaf: true,
+            typeCode: "emp",
+            isLeaf: true,
           },
         ]);
       } else if (node.data.id == "2-1") {
         resolve([
           {
-            label: "马冬梅",
+            name: "马冬梅",
             id: "2-1-1",
-            type: "person",
-            leaf: true,
+            typeCode: "emp",
+            isLeaf: true,
           },
         ]);
       } else {
@@ -189,22 +189,22 @@ export default {
       // 检索 keyword，获取新的树
       const data = [
         {
-          label: "李景亮",
+          name: "李景亮",
           id: "3-1-1",
-          type: "person",
-          leaf: true,
+          typeCode: "emp",
+          isLeaf: true,
         },
         {
-          label: "王刘妮",
+          name: "王刘妮",
           id: "3-1-2",
-          type: "person",
-          leaf: true,
+          typeCode: "emp",
+          isLeaf: true,
         },
         {
-          label: "刘思吉吉",
+          name: "刘思吉吉",
           id: "3-1-3",
-          type: "person",
-          leaf: true,
+          typeCode: "emp",
+          isLeaf: true,
         },
       ];
       resolve(data);

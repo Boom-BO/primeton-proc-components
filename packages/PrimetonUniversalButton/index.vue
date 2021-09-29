@@ -17,7 +17,7 @@
           >
             <template slot="title" class="title-bar">
               <span class="title-icon">
-                <i class="iconfont icon-pre-process"></i>
+                <i class="pre-iconfont icon-pre-process"></i>
               </span>
               {{ item.name }}
               <span v-if="activeCollapse === index" class="placeholder">
@@ -33,10 +33,10 @@
                   v-model="keyword"
                   placeholder="请输入关键字"
                   size="mini"
-                  @keyup.enter="search"
+                  @keyup.enter.native="search"
                 ></el-input>
                 <span class="search-text-btn" @click="search">
-                  <i class="iconfont icon-pre-search"></i> 查询
+                  <i class="pre-iconfont icon-pre-search"></i> 查询
                 </span>
                 <div class="search-type">
                   <span
@@ -63,20 +63,20 @@
               >
                 <span class="custom-tree-node" slot-scope="{ node, data }">
                   <i
-                    v-if="data.type === 'company'"
-                    class="iconfont icon-pre-wenjianjia"
+                    v-if="data.typeCode === 'company'"
+                    class="pre-iconfont icon-pre-wenjianjia"
                   ></i>
                   <i
-                    v-if="data.type === 'org'"
-                    class="iconfont icon-pre-org"
+                    v-if="data.typeCode === 'org'"
+                    class="pre-iconfont icon-pre-org"
                   ></i>
                   <i
-                    v-if="data.type === 'person'"
-                    class="iconfont icon-pre-staff"
+                    v-if="data.typeCode === 'emp'"
+                    class="pre-iconfont icon-pre-staff"
                   ></i>
                   <i
-                    v-if="data.type === 'role'"
-                    class="iconfont icon-pre-org"
+                    v-if="data.typeCode === 'role'"
+                    class="pre-iconfont icon-pre-org"
                   ></i>
                   <span class="node-label">{{ node.label }}</span>
                 </span>
@@ -93,20 +93,20 @@
               >
                 <span class="custom-tree-node" slot-scope="{ node, data }">
                   <i
-                    v-if="data.type === 'company'"
-                    class="iconfont icon-pre-wenjianjia"
+                    v-if="data.typeCode === 'company'"
+                    class="pre-iconfont icon-pre-wenjianjia"
                   ></i>
                   <i
-                    v-if="data.type === 'org'"
-                    class="iconfont icon-pre-org"
+                    v-if="data.typeCode === 'org'"
+                    class="pre-iconfont icon-pre-org"
                   ></i>
                   <i
-                    v-if="data.type === 'person'"
-                    class="iconfont icon-pre-staff"
+                    v-if="data.typeCode === 'emp'"
+                    class="pre-iconfont icon-pre-staff"
                   ></i>
                   <i
-                    v-if="data.type === 'role'"
-                    class="iconfont icon-pre-org"
+                    v-if="data.typeCode === 'role'"
+                    class="pre-iconfont icon-pre-org"
                   ></i>
                   <span class="node-label">{{ node.label }}</span>
                 </span>
@@ -127,7 +127,7 @@
                     :key="tag.id"
                     @close="delItem(tagIndex, 'role')"
                   >
-                    {{ tag.label }}
+                    {{ tag.name }}
                   </p-tag>
                 </div>
               </template>
@@ -145,7 +145,7 @@
                     :key="tag.id"
                     @close="delItem(tagIndex, 'org')"
                   >
-                    {{ tag.label }}
+                    {{ tag.name }}
                   </p-tag>
                 </div>
               </template>
@@ -161,9 +161,9 @@
                   <p-tag
                     v-for="(tag, tagIndex) in data[index].selectedPersonArray"
                     :key="tag.id"
-                    @close="delItem(tagIndex, 'person')"
+                    @close="delItem(tagIndex, 'emp')"
                   >
-                    {{ tag.label }}</p-tag
+                    {{ tag.name }}</p-tag
                   >
                 </div>
               </template>
@@ -172,7 +172,7 @@
           <!-- <el-collapse-item>
             <template slot="title">
               <span class="title-icon">
-                <i class="iconfont icon-pre-process"></i>
+                <i class="pre-iconfont icon-pre-process"></i>
               </span>
               领导审批
               <span class="placeholder">选择参与者</span>
@@ -190,20 +190,20 @@
               >
                 <span class="custom-tree-node" slot-scope="{ node, data }">
                   <i
-                    v-if="data.type === 'company'"
-                    class="iconfont icon-pre-wenjianjia"
+                    v-if="data.typeCode === 'company'"
+                    class="pre-iconfont icon-pre-wenjianjia"
                   ></i>
                   <i
-                    v-if="data.type === 'org'"
-                    class="iconfont icon-pre-org"
+                    v-if="data.typeCode === 'org'"
+                    class="pre-iconfont icon-pre-org"
                   ></i>
                   <i
-                    v-if="data.type === 'person'"
-                    class="iconfont icon-pre-staff"
+                    v-if="data.typeCode === 'emp'"
+                    class="pre-iconfont icon-pre-staff"
                   ></i>
                   <i
-                    v-if="data.type === 'role'"
-                    class="iconfont icon-pre-org"
+                    v-if="data.typeCode === 'role'"
+                    class="pre-iconfont icon-pre-org"
                   ></i>
                   <span class="node-label">{{ node.label }}</span>
                 </span>
@@ -222,7 +222,7 @@
                     v-for="tag in data[1].selectedRoleArray"
                     :key="tag.id"
                     @close="delItem(tag, 'role')"
-                    >{{ tag.label }}
+                    >{{ tag.name }}
                   </p-tag>
                 </div>
               </template>
@@ -238,7 +238,7 @@
                     v-for="tag in data[1].selectedOrgArray"
                     :key="tag.id"
                     @close="delItem(tag, 'org')"
-                    >{{ tag.label }}
+                    >{{ tag.name }}
                   </p-tag>
                 </div>
               </template>
@@ -253,9 +253,9 @@
                   <p-tag
                     v-for="tag in data[1].selectedPersonArray"
                     :key="tag.id"
-                    @close="delItem(tag, 'person')"
+                    @close="delItem(tag, 'emp')"
                   >
-                    {{ tag.label }}</p-tag
+                    {{ tag.name }}</p-tag
                   >
                 </div>
               </template>
@@ -326,44 +326,45 @@ export default {
     return {
       dialogVisible: false,
       slotNode: null,
-      auditLinks: [
-        {
-          id: "manualActivity4",
-          name: "财务审批",
-          participants: [
-            {
-              id: "1021",
-              name: "部门经理",
-              typeCode: "role",
-            },
-            {
-              id: "41",
-              name: "开发部",
-              typeCode: "org",
-            },
-          ],
-        },
-        {
-          id: "leaderActivity4",
-          name: "领导审批",
-          participants: [
-            {
-              id: "1021",
-              name: "部门经理",
-              typeCode: "role",
-            },
-            {
-              id: "41",
-              name: "开发部",
-              typeCode: "org",
-            },
-          ],
-        },
-      ],
+      auditLinks: [],
+      // [
+      //   {
+      //     id: "manualActivity4",
+      //     name: "财务审批",
+      //     participants: [
+      //       {
+      //         id: "1021",
+      //         name: "部门经理",
+      //         typeCode: "role",
+      //       },
+      //       {
+      //         id: "41",
+      //         name: "开发部",
+      //         typeCode: "org",
+      //       },
+      //     ],
+      //   },
+      //   {
+      //     id: "leaderActivity4",
+      //     name: "领导审批",
+      //     participants: [
+      //       {
+      //         id: "1021",
+      //         name: "部门经理",
+      //         typeCode: "role",
+      //       },
+      //       {
+      //         id: "41",
+      //         name: "开发部",
+      //         typeCode: "org",
+      //       },
+      //     ],
+      //   },
+      // ],
       defaultProps: {
         children: "children",
-        label: "label",
-        isLeaf: "leaf",
+        label: "name",
+        isLeaf: "isLeaf",
       },
       activeCollapse: 0, // 当前展开或选中的流程
       data: [],
@@ -431,7 +432,7 @@ export default {
           this.$set(this.data[this.activeCollapse], "selectedRoleArray", []);
         }
       }
-      if (data.type === "org" || data.type === "company") {
+      if (data.typeCode === "org" || data.typeCode === "company") {
         // if (
         //   !this.data[this.activeCollapse] ||
         //   !this.data[this.activeCollapse]["selectedOrgArray"]
@@ -450,7 +451,7 @@ export default {
           this.data[this.activeCollapse].selectedOrgArray.push(data);
         }
         // }
-      } else if (data.type === "person") {
+      } else if (data.typeCode === "emp") {
         // 选择人员
         // if (
         //   !this.data[this.activeCollapse] ||
@@ -469,7 +470,7 @@ export default {
           this.data[this.activeCollapse].selectedPersonArray.push(data);
         }
         // }
-      } else if (data.type === "role") {
+      } else if (data.typeCode === "role") {
         // 选择角色
         // if (
         //   !this.data[this.activeCollapse] ||
@@ -493,7 +494,7 @@ export default {
     delItem(index, type) {
       if (type === "org" || type === "company") {
         this.data[this.activeCollapse].selectedOrgArray.splice(index, 1);
-      } else if (type === "person") {
+      } else if (type === "emp") {
         this.data[this.activeCollapse].selectedPersonArray.splice(index, 1);
       } else if (type === "role") {
         this.data[this.activeCollapse].selectedRoleArray.splice(index, 1);
@@ -512,7 +513,18 @@ export default {
       this.$emit("close");
     },
     comfirm() {
-      this.$emit("confirm", this.data, () => {
+      const data = this.data.map((item, index) => {
+        return {
+          id: this.auditLinks[index].id, // 活动定义ID
+          isAppoint: false, // 是否指派活动
+          appointedParticipants: [
+            ...item.selectedOrgArray,
+            ...item.selectedPersonArray,
+            ...item.selectedRoleArray,
+          ],
+        };
+      });
+      this.$emit("confirm", data, () => {
         this.close();
       });
       // this.close();
@@ -529,7 +541,7 @@ export default {
           label +=
             "部门：" +
             this.data[index].selectedOrgArray
-              .map((item) => item.label)
+              .map((item) => item.name)
               .join("、") +
             "。";
         }
@@ -540,7 +552,7 @@ export default {
           label +=
             "人员：" +
             this.data[index].selectedPersonArray
-              .map((item) => item.label)
+              .map((item) => item.name)
               .join("、") +
             "。";
         }
@@ -551,7 +563,7 @@ export default {
           label +=
             "角色：" +
             this.data[index].selectedRoleArray
-              .map((item) => item.label)
+              .map((item) => item.name)
               .join("、") +
             "。";
         }
@@ -573,7 +585,7 @@ export default {
       if (this.keyword === "") {
         this.collapseOnChange();
       } else {
-        this.$emit("filter", this.keyword, (data) => {
+        this.$emit("filter", this.keyword, this.config, (data) => {
           this.isLazy = false;
           this.treeData = data;
         });
@@ -739,7 +751,7 @@ export default {
   .custom-tree-node {
     font-size: 14px;
 
-    .iconfont {
+    .pre-iconfont {
       margin-right: 5px;
     }
   }

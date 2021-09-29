@@ -3,7 +3,7 @@
     <slot />
     <i
       v-if="closeable"
-      class="close-btn iconfont icon-pre-close-circle"
+      class="close-btn pre-iconfont icon-pre-close-circle"
       @click="del"
     ></i>
   </span>

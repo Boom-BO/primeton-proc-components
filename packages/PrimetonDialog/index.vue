@@ -2,7 +2,7 @@
   <!-- <transition name="fade"> -->
   <div class="primeton-dialog-mask" v-if="visible">
     <div class="primeton-dialog" :style="{ width: dialogWidth }">
-      <i class="close-btn iconfont icon-pre-close" @click="closeDialog"></i>
+      <i class="close-btn pre-iconfont icon-pre-close" @click="closeDialog"></i>
       <div class="header">
         {{ title }}
       </div>
