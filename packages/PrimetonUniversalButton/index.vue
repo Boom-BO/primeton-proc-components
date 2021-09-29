@@ -123,9 +123,9 @@
                 <p class="title-row">角色：</p>
                 <div class="tags-wrapper">
                   <p-tag
-                    v-for="tag in data[index].selectedRoleArray"
+                    v-for="(tag, tagIndex) in data[index].selectedRoleArray"
                     :key="tag.id"
-                    @close="delItem(tag, 'role')"
+                    @close="delItem(tagIndex, 'role')"
                   >
                     {{ tag.label }}
                   </p-tag>
@@ -141,9 +141,9 @@
                 <p class="title-row">部门：</p>
                 <div class="tags-wrapper">
                   <p-tag
-                    v-for="tag in data[index].selectedOrgArray"
+                    v-for="(tag, tagIndex) in data[index].selectedOrgArray"
                     :key="tag.id"
-                    @close="delItem(tag, 'org')"
+                    @close="delItem(tagIndex, 'org')"
                   >
                     {{ tag.label }}
                   </p-tag>
@@ -159,9 +159,9 @@
                 <p class="title-row">人员：</p>
                 <div class="tags-wrapper">
                   <p-tag
-                    v-for="tag in data[index].selectedPersonArray"
+                    v-for="(tag, tagIndex) in data[index].selectedPersonArray"
                     :key="tag.id"
-                    @close="delItem(tag, 'person')"
+                    @close="delItem(tagIndex, 'person')"
                   >
                     {{ tag.label }}</p-tag
                   >

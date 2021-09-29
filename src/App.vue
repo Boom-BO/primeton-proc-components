@@ -35,7 +35,7 @@ export default {
       setTimeout(() => {
         console.log("*********************");
         open();
-      }, 3000);
+      }, 1000);
     },
     loadLinks(resolve) {
       const data = [
