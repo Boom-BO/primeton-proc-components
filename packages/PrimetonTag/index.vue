@@ -38,7 +38,8 @@ export default {
   position: relative;
   display: inline-block;
   height: 24px;
-  margin-left: 5px;
+  margin-right: 5px;
+  margin-bottom: 5px;
   padding: 0 12px;
   line-height: 22px;
   font-size: 12px;
@@ -50,8 +51,8 @@ export default {
   white-space: nowrap;
   cursor: default;
 
-  &:nth-of-type(1) {
-    margin-left: 0;
+  &:nth-last-of-type(1) {
+    margin-right: 0;
   }
 
   &:hover {
