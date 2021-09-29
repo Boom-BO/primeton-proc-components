@@ -126,7 +126,8 @@
                     v-for="tag in data[index].selectedRoleArray"
                     :key="tag.id"
                     @close="delItem(tag, 'role')"
-                    >{{ tag.label }}
+                  >
+                    {{ tag.label }}
                   </p-tag>
                 </div>
               </template>
@@ -143,7 +144,8 @@
                     v-for="tag in data[index].selectedOrgArray"
                     :key="tag.id"
                     @close="delItem(tag, 'org')"
-                    >{{ tag.label }}
+                  >
+                    {{ tag.label }}
                   </p-tag>
                 </div>
               </template>
@@ -299,6 +301,20 @@ export default {
       type: Array,
       default: () => ["role", "org"],
     },
+    // 范围相关配置项
+    config: {
+      type: Object,
+      default: () => {
+        return {
+          buttonType: "act_select_party",
+          isNotAllowParentChild: false,
+          orgScope: "all",
+          roleScope: "all",
+          selectPartyType: "emp,role,org,position",
+          viewPartyType: "org,role",
+        };
+      },
+    },
     // loadTreeData: {
     //   type: Function,
     //   default: () => {
@@ -381,7 +397,7 @@ export default {
     loadNode(node, resolve) {
       if (node.level === 0) {
         // 加载根数据
-        this.$emit("loadTreeRootData", (root) => {
+        this.$emit("loadTreeRootData", this.config, (root) => {
           this.treeData = root;
           return resolve(root);
         });
@@ -391,7 +407,7 @@ export default {
         rootNode.loadData();
       } else {
         // 加载子数据
-        this.$emit("loadTreeChildrenData", node, (children) => {
+        this.$emit("loadTreeChildrenData", node, this.config, (children) => {
           return resolve(children);
         });
       }
@@ -573,11 +589,13 @@ export default {
     background: #378af7;
     text-align: center;
     line-height: 25px;
+
     i {
       color: #fff;
       font-size: 15px;
     }
   }
+
   ::v-deep .el-collapse-item__header {
     padding: 0 20px;
     box-sizing: border-box;
@@ -588,6 +606,7 @@ export default {
     &.is-active {
       border-bottom: 1px solid #d2d9e6;
     }
+
     .placeholder {
       max-width: 350px;
       margin-left: auto;
@@ -597,6 +616,7 @@ export default {
       text-overflow: ellipsis;
       white-space: nowrap;
     }
+
     .el-collapse-item__arrow {
       margin: 0 8px;
     }
@@ -604,6 +624,7 @@ export default {
 
   ::v-deep .el-collapse {
     border: none;
+
     .el-collapse-item {
       border: 1px solid #d2d9e6;
       border-radius: 5px;
@@ -660,6 +681,7 @@ export default {
           color: darken(#599af6, 20%);
         }
       }
+
       .search-type {
         width: 100%;
         margin: 10px 0 0 0;
@@ -667,6 +689,7 @@ export default {
         font-weight: 500;
         color: #747677;
         text-align: left;
+
         span {
           margin-left: 10px;
           cursor: pointer;

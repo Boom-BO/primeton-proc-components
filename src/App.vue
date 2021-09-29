@@ -67,7 +67,11 @@ export default {
       resolve(data);
     },
     // 根数据
-    loadTreeRootData(resolve) {
+    loadTreeRootData(resolve, config) {
+      console.log(
+        "🚀 ~ file: App.vue ~ line 71 ~ loadTreeRootData ~ config",
+        config
+      );
       const rootData = [
         {
           id: "1",
@@ -111,7 +115,11 @@ export default {
       resolve(rootData);
     },
     // 懒加载根据节点查询数据
-    loadTreeChildrenData(node, resolve) {
+    loadTreeChildrenData(node, config, resolve) {
+      console.log(
+        "🚀 ~ file: App.vue ~ line 116 ~ loadTreeChildrenData ~ config",
+        config
+      );
       if (node.data.id == "1") {
         resolve([
           {
