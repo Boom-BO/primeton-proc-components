@@ -12,6 +12,7 @@
       @filter="filterData"
       @confirm="confirm"
       @close="close"
+      @beforeOpen="beforeOpen"
     >
       <button type="button" @click="btnClick('你个小辣鸡')">牛逼啊</button>
     </PrimetonUniversalButton>
@@ -29,6 +30,13 @@ export default {
     return {};
   },
   methods: {
+    beforeOpen(open) {
+      console.log("弹窗之前的回调");
+      setTimeout(() => {
+        console.log("*********************");
+        open();
+      }, 3000);
+    },
     loadLinks(resolve) {
       const data = [
         {
@@ -67,7 +75,7 @@ export default {
       resolve(data);
     },
     // 根数据
-    loadTreeRootData(resolve, config) {
+    loadTreeRootData(config, resolve) {
       console.log(
         "🚀 ~ file: App.vue ~ line 71 ~ loadTreeRootData ~ config",
         config

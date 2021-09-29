@@ -381,7 +381,11 @@ export default {
   mounted() {
     if (this.$slots.default) {
       this.slotNode = this.$slots.default[0].elm;
-      on(this.slotNode, "click", this.open);
+      on(this.slotNode, "click", () => {
+        this.$emit("beforeOpen", () => {
+          this.open();
+        });
+      });
     }
     this.$emit("loadLinks", (auditLinks) => {
       this.auditLinks = auditLinks;
@@ -399,12 +403,14 @@ export default {
         // 加载根数据
         this.$emit("loadTreeRootData", this.config, (root) => {
           this.treeData = root;
+          this.$nextTick(() => {
+            // 返回数据为两层，默认展开显示两层数据
+            const rootNode = node.childNodes[0];
+            rootNode.expanded = true;
+            rootNode.loadData();
+          });
           return resolve(root);
         });
-        // 返回数据为两层，默认展开显示两层数据
-        const rootNode = node.childNodes[0];
-        rootNode.expanded = true;
-        rootNode.loadData();
       } else {
         // 加载子数据
         this.$emit("loadTreeChildrenData", node, this.config, (children) => {
@@ -539,12 +545,12 @@ export default {
             "。";
         }
         if (
-          this.data[index].selectedPersonArray &&
-          this.data[index].selectedPersonArray.length > 0
+          this.data[index].selectedRoleArray &&
+          this.data[index].selectedRoleArray.length > 0
         ) {
           label +=
             "角色：" +
-            this.data[index].selectedPersonArray
+            this.data[index].selectedRoleArray
               .map((item) => item.label)
               .join("、") +
             "。";
@@ -704,6 +710,10 @@ export default {
           }
         }
       }
+    }
+    ::v-deep .el-tree {
+      height: 140px;
+      overflow: auto;
     }
   }
 
