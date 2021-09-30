@@ -388,9 +388,6 @@ export default {
         });
       });
     }
-    this.$emit("loadLinks", (auditLinks) => {
-      this.auditLinks = auditLinks;
-    });
   },
   beforeDestroy() {
     if (this.slotNode) {
@@ -503,6 +500,10 @@ export default {
     open() {
       console.log("&&&&&&&&&&&&&&&&");
       this.dialogVisible = true;
+
+      this.$emit("loadLinks", (auditLinks) => {
+        this.auditLinks = auditLinks;
+      });
     },
     close() {
       this.dialogVisible = false;
