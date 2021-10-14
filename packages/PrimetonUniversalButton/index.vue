@@ -535,6 +535,7 @@ export default {
     },
     // 环节折叠面板展开事件
     collapseOnChange(val) {
+      console.log(val);
       // 清空其他环节相关数据
       this.keyword = "";
       this.isLazy = true;
@@ -695,7 +696,7 @@ export default {
       }
     }
     ::v-deep .el-tree {
-      height: 140px;
+      height: 190px;
       overflow: auto;
     }
 
@@ -724,6 +725,7 @@ export default {
     border-left: 1px solid #d2d9e6;
     text-align: left;
     box-sizing: border-box;
+    overflow-y: auto;
 
     .result-total {
       font-size: 16px;
