@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "19857045",
+      "name": "角色",
+      "font_class": "pre-role",
+      "unicode": "e716",
+      "unicode_decimal": 59158
+    },
+    {
       "icon_id": "1321292",
       "name": "search",
       "font_class": "pre-search",

@@ -40,10 +40,10 @@
                 </span>
                 <div class="search-type">
                   <span
-                    v-for="(type, index) in viewPartyType"
-                    :key="index"
-                    :class="index === 0 && 'active'"
-                    @click="search(type)"
+                    v-for="(type, tindex) in viewPartyType"
+                    :key="tindex"
+                    :class="type === activeTreeType[index] && 'active'"
+                    @click="switchTreeType(type, index)"
                   >
                     {{ type === "org" ? "机构树" : "角色树" }}
                   </span>
@@ -76,11 +76,13 @@
                   ></i>
                   <i
                     v-if="data.typeCode === 'role'"
-                    class="pre-iconfont icon-pre-org"
+                    class="pre-iconfont icon-pre-role"
                   ></i>
                   <span class="node-label">{{ node.label }}</span>
                 </span>
               </el-tree>
+              <!-- <template v-else> -->
+              <!-- v-if="treeData.length > 0" -->
               <el-tree
                 v-else
                 :key="'tree' + index"
@@ -91,7 +93,11 @@
                 :expand-on-click-node="false"
                 @node-click="handleNodeClick"
               >
-                <span class="custom-tree-node" slot-scope="{ node, data }">
+                <span
+                  class="custom-tree-node"
+                  :key="'node-' + index"
+                  slot-scope="{ node, data }"
+                >
                   <i
                     v-if="data.typeCode === 'company'"
                     class="pre-iconfont icon-pre-wenjianjia"
@@ -106,13 +112,22 @@
                   ></i>
                   <i
                     v-if="data.typeCode === 'role'"
-                    class="pre-iconfont icon-pre-org"
+                    class="pre-iconfont icon-pre-role"
                   ></i>
                   <span class="node-label">{{ node.label }}</span>
                 </span>
               </el-tree>
+              <!-- <div v-else class="none-search-data">
+                  <img src="@/assets/none-search-data.png" alt="" />
+                  <p>暂无搜索结果</p>
+                </div> -->
+              <!-- </template> -->
             </div>
             <div class="result-container">
+              <div class="result-total">
+                选中
+                <span class="clear-btn" @click="clearResult(index)">清空</span>
+              </div>
               <template
                 v-if="
                   data[index] &&
@@ -169,98 +184,6 @@
               </template>
             </div>
           </el-collapse-item>
-          <!-- <el-collapse-item>
-            <template slot="title">
-              <span class="title-icon">
-                <i class="pre-iconfont icon-pre-process"></i>
-              </span>
-              领导审批
-              <span class="placeholder">选择参与者</span>
-            </template>
-            <div class="tree-container">
-              <el-tree
-                ref="tree"
-                :props="defaultProps"
-                :load="loadNode"
-                lazy
-                node-key="id"
-                highlight-current
-                :expand-on-click-node="false"
-                @node-click="handleNodeClick"
-              >
-                <span class="custom-tree-node" slot-scope="{ node, data }">
-                  <i
-                    v-if="data.typeCode === 'company'"
-                    class="pre-iconfont icon-pre-wenjianjia"
-                  ></i>
-                  <i
-                    v-if="data.typeCode === 'org'"
-                    class="pre-iconfont icon-pre-org"
-                  ></i>
-                  <i
-                    v-if="data.typeCode === 'emp'"
-                    class="pre-iconfont icon-pre-staff"
-                  ></i>
-                  <i
-                    v-if="data.typeCode === 'role'"
-                    class="pre-iconfont icon-pre-org"
-                  ></i>
-                  <span class="node-label">{{ node.label }}</span>
-                </span>
-              </el-tree>
-            </div>
-            <div class="result-container">
-              <template
-                v-if="
-                  data[1].selectedRoleArray &&
-                  data[1].selectedRoleArray.length > 0
-                "
-              >
-                <p class="title-row">角色：</p>
-                <div class="tags-wrapper">
-                  <p-tag
-                    v-for="tag in data[1].selectedRoleArray"
-                    :key="tag.id"
-                    @close="delItem(tag, 'role')"
-                    >{{ tag.name }}
-                  </p-tag>
-                </div>
-              </template>
-              <template
-                v-if="
-                  data[1].selectedOrgArray &&
-                  data[1].selectedOrgArray.length > 0
-                "
-              >
-                <p class="title-row">部门：</p>
-                <div class="tags-wrapper">
-                  <p-tag
-                    v-for="tag in data[1].selectedOrgArray"
-                    :key="tag.id"
-                    @close="delItem(tag, 'org')"
-                    >{{ tag.name }}
-                  </p-tag>
-                </div>
-              </template>
-              <template
-                v-if="
-                  data[1].selectedPersonArray &&
-                  data[1].selectedPersonArray.length > 0
-                "
-              >
-                <p class="title-row">人员：</p>
-                <div class="tags-wrapper">
-                  <p-tag
-                    v-for="tag in data[1].selectedPersonArray"
-                    :key="tag.id"
-                    @close="delItem(tag, 'emp')"
-                  >
-                    {{ tag.name }}</p-tag
-                  >
-                </div>
-              </template>
-            </div>
-          </el-collapse-item> -->
         </el-collapse>
       </div>
       <div slot="footer" class="footer">
@@ -325,8 +248,8 @@ export default {
   data() {
     return {
       dialogVisible: false,
-      slotNode: null,
-      auditLinks: [],
+      slotNode: null, // 插槽节点
+      auditLinks: [], // 环节数据
       // [
       //   {
       //     id: "manualActivity4",
@@ -368,9 +291,12 @@ export default {
       },
       activeCollapse: 0, // 当前展开或选中的流程
       data: [],
+      activeTreeType: [], // 环节的选中tab数组
       keyword: "",
       isLazy: true,
       treeData: [], // 非懒加载数据
+      treeRootNodes: [], // 懒加载树的根节点容器（因为有多个流程），用于重置树
+      treeRootResolve: [], // 懒加载树根节点的赋值回调容器（因为有多个流程）
       // data[0].selectedRoleArray: [], // 已勾选的角色
       // data[0].selectedOrgArray: [], // 已勾选的部门
       // data[0].selectedPersonArray: [], // 已勾选的人员
@@ -395,27 +321,50 @@ export default {
     }
   },
   methods: {
+    // 切换不同类型树（组织树与角色树切换）
+    switchTreeType(type, index) {
+      // this.activeTreeType[index] = type;
+      // 清除检索条件，并切换为懒加载树
+      this.collapseOnChange();
+      this.$set(this.activeTreeType, index, type);
+      this.treeRootNodes[index].childNodes = []; //把存起来的node的子节点清空，不然会界面会出现重复树
+      this.loadNode(this.treeRootNodes[index], this.treeRootResolve[index]); //再次执行懒加载的方法
+    },
     // 懒加载
     loadNode(node, resolve) {
       if (node.level === 0) {
+        this.treeRootNodes[this.treeRootNodes.length] = node;
+        this.treeRootResolve[this.treeRootResolve.length] = resolve;
         // 加载根数据
-        this.$emit("loadTreeRootData", this.config, (root) => {
-          this.treeData = root;
-          this.$nextTick(() => {
-            // 返回数据为两层，默认展开显示两层数据
-            const rootNode = node.childNodes[0];
-            rootNode.expanded = true;
-            rootNode.loadData();
-          });
-          return resolve(root);
-        });
+        this.$emit(
+          "loadTreeRootData",
+          this.activeTreeType[this.activeCollapse],
+          this.config,
+          (root) => {
+            this.treeData = root;
+            this.$nextTick(() => {
+              // 返回数据为两层，默认展开显示两层数据
+              const childNodes = node.childNodes[0];
+              childNodes.expanded = true;
+              childNodes.loadData();
+            });
+            return resolve(root);
+          }
+        );
       } else {
         // 加载子数据
-        this.$emit("loadTreeChildrenData", node, this.config, (children) => {
-          return resolve(children);
-        });
+        this.$emit(
+          "loadTreeChildrenData",
+          node,
+          this.activeTreeType[this.activeCollapse],
+          this.config,
+          (children) => {
+            return resolve(children);
+          }
+        );
       }
     },
+    // 节点点击事件，根据节点类型放入不同的环节中的相应类型容器
     handleNodeClick(data) {
       if (!this.data[this.activeCollapse]) {
         this.$set(this.data, this.activeCollapse, {});
@@ -488,6 +437,7 @@ export default {
         // }
       }
     },
+    // 删除已选节点，删除对应环节中对应类型的数据
     delItem(index, type) {
       if (type === "org" || type === "company") {
         this.data[this.activeCollapse].selectedOrgArray.splice(index, 1);
@@ -497,22 +447,26 @@ export default {
         this.data[this.activeCollapse].selectedRoleArray.splice(index, 1);
       }
     },
+    // 弹窗打开事件
     open() {
-      console.log("&&&&&&&&&&&&&&&&");
       this.dialogVisible = true;
-
+      // 获取环节数据
       this.$emit("loadLinks", (auditLinks) => {
         this.auditLinks = auditLinks;
+        // 设置每个环节的默认展示树类型，默认为组织树
+        this.auditLinks.forEach(() => {
+          this.activeTreeType.push("org");
+        });
       });
     },
+    // 弹窗关闭事件，
     close() {
       this.dialogVisible = false;
+      // 清空已选节点数据
       this.data = [];
-      // this.data[0].selectedOrgArray = [];
-      // this.data[0].selectedPersonArray = [];
-      // this.data[0].selectedRoleArray = [];
       this.$emit("close");
     },
+    // 确认提交事件，格式化已选节点数据并抛出
     comfirm() {
       const data = this.data.map((item, index) => {
         return {
@@ -525,11 +479,19 @@ export default {
           ],
         };
       });
+      // 关闭弹窗的回调
       this.$emit("confirm", data, () => {
         this.close();
       });
       // this.close();
     },
+    // 清空所有选中节点数据
+    clearResult(index) {
+      this.$set(this.data[index], "selectedOrgArray", []);
+      this.$set(this.data[index], "selectedPersonArray", []);
+      this.$set(this.data[index], "selectedRoleArray", []);
+    },
+    // 环节收起时，环节头部显示已选节点数据
     getSelectedLabel(index) {
       if (!this.data[index] || JSON.stringify(this.data[index]) === "{}") {
         return "选择参与者";
@@ -571,25 +533,30 @@ export default {
         return label;
       }
     },
-    // 折叠面板展开事件
+    // 环节折叠面板展开事件
     collapseOnChange(val) {
-      console.log(
-        "🚀 ~ file: index.vue ~ line 541 ~ collapseOnChange ~ val",
-        val
-      );
+      // 清空其他环节相关数据
       this.keyword = "";
       this.isLazy = true;
       this.treeData = [];
     },
-    search(type) {
-      console.log("🚀 ~ file: index.vue ~ line 500 ~ search ~ type", type);
+    // 关键词检索，获取数据后根据回调渲染无懒加载的新树
+    search() {
       if (this.keyword === "") {
         this.collapseOnChange();
       } else {
-        this.$emit("filter", this.keyword, this.config, (data) => {
-          this.isLazy = false;
-          this.treeData = data;
-        });
+        this.treeRootNodes = [];
+        this.treeRootResolve = [];
+        this.$emit(
+          "filter",
+          this.keyword,
+          this.activeTreeType[this.activeCollapse],
+          this.config,
+          (data) => {
+            this.isLazy = false;
+            this.treeData = data;
+          }
+        );
       }
     },
   },
@@ -662,11 +629,14 @@ export default {
     }
 
     .icon-pre-org {
-      color: #70bffd;
+      color: #ffc800;
     }
 
     .icon-pre-staff {
       color: #cfae80;
+    }
+    .icon-pre-role {
+      color: #70bffd;
     }
 
     .search-bar {
@@ -728,16 +698,58 @@ export default {
       height: 140px;
       overflow: auto;
     }
+
+    .none-search-data {
+      margin: 20px 0 0 0;
+      text-align: center;
+
+      img {
+        display: block;
+        width: 80px;
+        margin: 0 auto;
+      }
+      p {
+        margin: 5px 0 0 0;
+        font-size: 12px;
+        color: #999;
+      }
+    }
   }
 
   .result-container {
     float: left;
     width: 50%;
-    height: 220px;
+    height: 270px;
     padding: 5px 10px;
     border-left: 1px solid #d2d9e6;
     text-align: left;
     box-sizing: border-box;
+
+    .result-total {
+      font-size: 16px;
+      font-weight: 500;
+      color: #000412;
+
+      .clear-btn {
+        display: inline-block;
+        vertical-align: middle;
+        margin-left: 5px;
+        padding: 0 7px;
+        line-height: 20px;
+        font-size: 12px;
+        font-weight: 400;
+        color: #575b5d;
+        border: 1px solid #dedede;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s;
+
+        &:hover {
+          color: #409eff;
+          border-color: #409eff;
+        }
+      }
+    }
 
     .title-row {
       margin: 5px 0;
@@ -745,7 +757,7 @@ export default {
     }
 
     .tags-wrapper {
-      min-height: 40px;
+      min-height: 26px;
     }
   }
 

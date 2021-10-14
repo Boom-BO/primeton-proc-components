@@ -13,6 +13,10 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-pre-role:before {
+  content: "\e716";
+}
+
 .icon-pre-search:before {
   content: "\e643";
 }

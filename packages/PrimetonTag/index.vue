@@ -37,11 +37,11 @@ export default {
 .primeton-tag {
   position: relative;
   display: inline-block;
-  height: 24px;
+  height: 21px;
   margin-right: 5px;
   margin-bottom: 5px;
-  padding: 0 12px;
-  line-height: 22px;
+  padding: 0 5px;
+  line-height: 20px;
   font-size: 12px;
   color: #409eff;
   background-color: #ecf5ff;
