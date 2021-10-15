@@ -36,7 +36,7 @@ export default {
         buttonClickName: "submitProcess",
         buttonEvent: "this.submit()",
         buttonAuthConfig: {
-          buttonType: "act_select_party",
+          buttonType: "select_act_party",
           isNotAllowParentChild: false,
           orgScope: "all",
           roleScope: "all",

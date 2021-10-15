@@ -6,6 +6,7 @@
     <PrimetonDialog :visible.sync="dialogVisible" :title="title" :width="650">
       <div class="content clearfix">
         <el-collapse
+          v-if="type === 'act_select_party' || type === 'select_act_party'"
           v-model="activeCollapse"
           accordion
           @change="collapseOnChange"
@@ -14,11 +15,22 @@
             v-for="(item, index) in auditLinks"
             :key="item.id"
             :name="index"
+            :class="
+              collapseRadio.indexOf(index) !== -1 && 'collapse-item__active'
+            "
           >
-            <template slot="title" class="title-bar">
-              <span class="title-icon">
+            <template slot="title">
+              <span class="title-icon" v-if="type === 'act_select_party'">
                 <i class="pre-iconfont icon-pre-process"></i>
               </span>
+              <span
+                v-else
+                class="collapse-radio"
+                @click.stop="collapseRadioOnclick(index)"
+              ></span>
+              <label class="collapse-item-status-label">
+                <i class="collapse-item-check el-icon-check"></i>
+              </label>
               {{ item.name }}
               <span v-if="activeCollapse === index" class="placeholder">
                 选择参与者
@@ -185,6 +197,8 @@
             </div>
           </el-collapse-item>
         </el-collapse>
+        <!--选择后续环节-->
+        <PrimetonProcessList v-else />
       </div>
       <div slot="footer" class="footer">
         <span class="u-button button--small" @click="close">取消</span>
@@ -200,15 +214,18 @@
 import { Tree, Collapse, CollapseItem, Input } from "element-ui";
 import pTag from "../PrimetonTag";
 import PrimetonDialog from "../PrimetonDialog";
+import PrimetonProcessList from "../PrimetonProcessList";
 import { on, off } from "@/utils/dom.js";
 export default {
   name: "PrimetonUniversalButton",
   components: {
     PrimetonDialog,
+    PrimetonProcessList,
     pTag,
     [Tree.name]: Tree,
     [Collapse.name]: Collapse,
     [CollapseItem.name]: CollapseItem,
+    [Input.name]: Input,
     [Input.name]: Input,
   },
   props: {
@@ -297,9 +314,7 @@ export default {
       treeData: [], // 非懒加载数据
       treeRootNodes: [], // 懒加载树的根节点容器（因为有多个流程），用于重置树
       treeRootResolve: [], // 懒加载树根节点的赋值回调容器（因为有多个流程）
-      // data[0].selectedRoleArray: [], // 已勾选的角色
-      // data[0].selectedOrgArray: [], // 已勾选的部门
-      // data[0].selectedPersonArray: [], // 已勾选的人员
+      collapseRadio: [], // 选流程选人中被选中的流程Index
     };
   },
   computed: {},
@@ -468,8 +483,10 @@ export default {
     },
     // 确认提交事件，格式化已选节点数据并抛出
     comfirm() {
+      // isNull：是否有选取的数据
+      let isNull = true;
       const data = this.data.map((item, index) => {
-        return {
+        const obj = {
           id: this.auditLinks[index].id, // 活动定义ID
           isAppoint: false, // 是否指派活动
           appointedParticipants: [
@@ -478,7 +495,23 @@ export default {
             ...item.selectedRoleArray,
           ],
         };
+        if (obj.appointedParticipants.length > 0) {
+          isNull = false;
+        }
+        return obj;
       });
+      if (this.type === "select_act_party" && !this.collapseRadio.length > 0) {
+        alert("未选择任何流程环节！");
+        return false;
+      }
+      if (isNull) {
+        // 未选取任何数据，弹窗提醒
+        // this.$alert("未选择任何人员或组织、角色等！", "提醒", {
+        //   confirmButtonText: "确定",
+        // });
+        alert("未选择任何人员或组织、角色等！");
+        return false;
+      }
       // 关闭弹窗的回调
       this.$emit("confirm", data, () => {
         this.close();
@@ -535,7 +568,14 @@ export default {
     },
     // 环节折叠面板展开事件
     collapseOnChange(val) {
-      console.log(val);
+      console.log(
+        "🚀 ~ file: index.vue ~ line 549 ~ collapseOnChange ~ val",
+        val
+      );
+      // if (val !== "" && this.type === "select_act_party") {
+      //   // 选环节选人时，单选时设置选中状态
+      //   this.collapseRadio = val;
+      // }
       // 清空其他环节相关数据
       this.keyword = "";
       this.isLazy = true;
@@ -560,6 +600,20 @@ export default {
         );
       }
     },
+    // 选环节选人--设置选中环节的状态
+    collapseRadioOnclick(index) {
+      const cindex = this.collapseRadio.indexOf(index);
+      if (cindex !== -1) {
+        this.collapseRadio.splice(cindex, 1);
+      } else {
+        this.collapseRadio.push(index);
+      }
+      // this.$set(this.collapseRadio, index, !this.collapseRadio[index]);
+      console.log(
+        "🚀 ~ file: index.vue ~ line 586 ~ collapseRadioOnclick ~ this.collapseRadio",
+        this.collapseRadio
+      );
+    },
   },
 };
 </script>
@@ -583,32 +637,6 @@ export default {
     }
   }
 
-  ::v-deep .el-collapse-item__header {
-    padding: 0 20px;
-    box-sizing: border-box;
-    font-size: 15px;
-    color: #3a3a3a;
-    border-bottom: 1px solid #fff;
-
-    &.is-active {
-      border-bottom: 1px solid #d2d9e6;
-    }
-
-    .placeholder {
-      max-width: 350px;
-      margin-left: auto;
-      font-size: 12px;
-      color: #a3a3a3;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .el-collapse-item__arrow {
-      margin: 0 8px;
-    }
-  }
-
   ::v-deep .el-collapse {
     border: none;
 
@@ -617,6 +645,105 @@ export default {
       border-radius: 5px;
       margin-bottom: 20px;
       overflow: hidden;
+
+      .el-collapse-item__header {
+        padding: 0 20px;
+        box-sizing: border-box;
+        font-size: 15px;
+        color: #3a3a3a;
+        border-bottom: 1px solid #fff;
+
+        &.is-active {
+          border-bottom: 1px solid #d2d9e6;
+        }
+
+        .placeholder {
+          max-width: 350px;
+          margin-left: auto;
+          font-size: 12px;
+          color: #a3a3a3;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .el-collapse-item__arrow {
+          margin: 0 8px;
+        }
+
+        .collapse-item-status-label {
+          display: none;
+        }
+      }
+
+      .collapse-radio {
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 15px;
+        width: 14px;
+        height: 14px;
+        border: 1px solid #d1d1d1;
+        border-radius: 50%;
+        transition: all 0.3s;
+        cursor: pointer;
+        // box-sizing: border-box;
+
+        // &::before {
+        //   width: 8px;
+        //   height: 8px;
+        //   background: #ffffff;
+        // }
+
+        // &.active {
+        //   width: 8px;
+        //   height: 8px;
+        //   background: #ffffff;
+        //   border: 4px solid #378af7;
+
+        //   // &::before {
+        //   //   border: 1px solid #979797;
+        //   // }
+        // }
+      }
+
+      .el-radio {
+        margin-right: 15px;
+        &__label {
+          display: none;
+        }
+      }
+
+      &.collapse-item__active {
+        border-color: #378af7;
+        .el-collapse-item__header {
+          position: relative;
+          .collapse-item-status-label {
+            display: block;
+            position: absolute;
+            right: -16px;
+            top: -12px;
+            width: 46px;
+            height: 26px;
+            background: #378af7;
+            text-align: center;
+            transform: rotate(35deg);
+            box-shadow: 0 1px 1px #ccc;
+
+            .collapse-item-check {
+              font-size: 16px;
+              font-weight: 500;
+              color: #fff;
+              transform: rotate(-30deg) translate(3px, -3px);
+            }
+          }
+          .collapse-radio {
+            width: 8px;
+            height: 8px;
+            background: #ffffff;
+            border: 4px solid #378af7;
+          }
+        }
+      }
     }
   }
 
