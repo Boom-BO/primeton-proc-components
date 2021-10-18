@@ -3,7 +3,12 @@
     <!-- <span :class="['u-button', size ? `button--${size}` : '', type ? `button--${type}` : '']" @click="handlerOnclick"> -->
     <slot />
     <!-- </span> -->
-    <PrimetonDialog :visible.sync="dialogVisible" :title="title" :width="650">
+    <PrimetonDialog
+      :visible.sync="dialogVisible"
+      :title="title"
+      :width="650"
+      @close="close"
+    >
       <div class="content clearfix">
         <el-collapse
           v-if="type === 'act_select_party' || type === 'select_act_party'"
@@ -479,13 +484,25 @@ export default {
       this.dialogVisible = false;
       // 清空已选节点数据
       this.data = [];
+      this.collapseRadio = [];
       this.$emit("close");
     },
     // 确认提交事件，格式化已选节点数据并抛出
     comfirm() {
       // isNull：是否有选取的数据
       let isNull = true;
-      const data = this.data.map((item, index) => {
+      let allData = [...this.data];
+      if (this.type === "select_act_party") {
+        if (!this.collapseRadio.length > 0) {
+          alert("未选择任何流程环节！");
+          return false;
+        } else {
+          allData = allData.filter(
+            (val, index) => this.collapseRadio.indexOf(index) !== -1
+          );
+        }
+      }
+      const data = allData.map((item, index) => {
         const obj = {
           id: this.auditLinks[index].id, // 活动定义ID
           isAppoint: false, // 是否指派活动
@@ -500,10 +517,6 @@ export default {
         }
         return obj;
       });
-      if (this.type === "select_act_party" && !this.collapseRadio.length > 0) {
-        alert("未选择任何流程环节！");
-        return false;
-      }
       if (isNull) {
         // 未选取任何数据，弹窗提醒
         // this.$alert("未选择任何人员或组织、角色等！", "提醒", {
@@ -608,11 +621,6 @@ export default {
       } else {
         this.collapseRadio.push(index);
       }
-      // this.$set(this.collapseRadio, index, !this.collapseRadio[index]);
-      console.log(
-        "🚀 ~ file: index.vue ~ line 586 ~ collapseRadioOnclick ~ this.collapseRadio",
-        this.collapseRadio
-      );
     },
   },
 };

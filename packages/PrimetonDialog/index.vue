@@ -48,6 +48,7 @@ export default {
   methods: {
     closeDialog() {
       this.$emit("update:visible", false);
+      this.$emit("close", true);
     },
   },
 };
