@@ -6,7 +6,7 @@
     <PrimetonDialog
       :visible.sync="dialogVisible"
       :title="title"
-      :width="650"
+      :width="type === 'select_act' ? 500 : 650"
       @close="close"
     >
       <div class="content clearfix">
@@ -78,7 +78,13 @@
                 :expand-on-click-node="false"
                 @node-click="handleNodeClick"
               >
-                <span class="custom-tree-node" slot-scope="{ node, data }">
+                <span
+                  :class="[
+                    'custom-tree-node',
+                    !hasAuth(data.typeCode) && 'disabled',
+                  ]"
+                  slot-scope="{ node, data }"
+                >
                   <i
                     v-if="data.typeCode === 'company'"
                     class="pre-iconfont icon-pre-wenjianjia"
@@ -111,7 +117,10 @@
                 @node-click="handleNodeClick"
               >
                 <span
-                  class="custom-tree-node"
+                  :class="[
+                    'custom-tree-node',
+                    !hasAuth(data.typeCode) && 'disabled',
+                  ]"
                   :key="'node-' + index"
                   slot-scope="{ node, data }"
                 >
@@ -203,7 +212,11 @@
           </el-collapse-item>
         </el-collapse>
         <!--选择后续环节-->
-        <PrimetonProcessList v-else />
+        <PrimetonProcessList
+          v-model="selectionProcessData"
+          :list-data="auditLinks"
+          v-else
+        />
       </div>
       <div slot="footer" class="footer">
         <span class="u-button button--small" @click="close">取消</span>
@@ -320,6 +333,8 @@ export default {
       treeRootNodes: [], // 懒加载树的根节点容器（因为有多个流程），用于重置树
       treeRootResolve: [], // 懒加载树根节点的赋值回调容器（因为有多个流程）
       collapseRadio: [], // 选流程选人中被选中的流程Index
+
+      selectionProcessData: [], // 环节选择--已选的环节id
     };
   },
   computed: {},
@@ -341,6 +356,10 @@ export default {
     }
   },
   methods: {
+    // 当前节点类型是否可选
+    hasAuth(type) {
+      return this.config.selectPartyType.split(",").indexOf(type) !== -1;
+    },
     // 切换不同类型树（组织树与角色树切换）
     switchTreeType(type, index) {
       // this.activeTreeType[index] = type;
@@ -384,8 +403,54 @@ export default {
         );
       }
     },
+    // 判断父节点是否已选
+    parentIsSelected(parent, data) {
+      if (!parent || !parent.data || !parent.data.id) {
+        return false;
+      }
+      const pIndex = data.findIndex((item) => item.id === parent.data.id);
+      if (pIndex !== -1) {
+        // 父元素已选择，不可选
+        this.$showMessage({
+          type: "warning",
+          text: "父节点已选择！",
+        });
+        return true;
+      } else {
+        return this.parentIsSelected(parent.parent, data);
+      }
+    },
+    // 判断字典点是否已选
+    childIsSelected(child, data) {
+      if (!child || !child.length > 0) {
+        return false;
+      }
+      let isTrue = false;
+      for (let i = 0; i < child.length; i++) {
+        console.log("🚀  i", i);
+        const cIndex = data.findIndex((item) => item.id === child[i].data.id);
+        if (cIndex !== -1) {
+          // 父元素已选择，不可选
+          this.$showMessage({
+            type: "warning",
+            text: "子节点已选择！",
+          });
+          isTrue = true;
+        }
+      }
+      if (isTrue) {
+        return true;
+      } else {
+        for (let i = 0; i < child.length; i++) {
+          return this.childIsSelected(child[i].childNodes, data);
+        }
+      }
+    },
     // 节点点击事件，根据节点类型放入不同的环节中的相应类型容器
-    handleNodeClick(data) {
+    handleNodeClick(data, Node) {
+      if (!this.hasAuth(data.typeCode)) {
+        return;
+      }
       if (!this.data[this.activeCollapse]) {
         this.$set(this.data, this.activeCollapse, {});
         if (!this.data[this.activeCollapse]["selectedOrgArray"]) {
@@ -398,63 +463,68 @@ export default {
           this.$set(this.data[this.activeCollapse], "selectedRoleArray", []);
         }
       }
+      const allSelectedArr = [
+        ...this.data[this.activeCollapse].selectedOrgArray,
+        ...this.data[this.activeCollapse].selectedPersonArray,
+        ...this.data[this.activeCollapse].selectedRoleArray,
+      ];
       if (data.typeCode === "org" || data.typeCode === "company") {
-        // if (
-        //   !this.data[this.activeCollapse] ||
-        //   !this.data[this.activeCollapse]["selectedOrgArray"]
-        // ) {
-        //   this.$set(this.data, this.activeCollapse, {});
-        //   this.$set(this.data[this.activeCollapse], "selectedOrgArray", []);
-        //   this.data[this.activeCollapse]["selectedOrgArray"].push(data);
-        // } else {
         // 选择部门
         const index = this.data[this.activeCollapse].selectedOrgArray.findIndex(
-          (item) => item.id === data.id
+          (item) => item.id == data.id
         );
         if (index !== -1) {
           this.data[this.activeCollapse].selectedOrgArray.splice(index, 1);
         } else {
+          // 父子节点不可同时选择处理
+          if (this.config.isNotAllowParentChild) {
+            if (
+              this.parentIsSelected(Node.parent, allSelectedArr) ||
+              this.childIsSelected(Node.childNodes, allSelectedArr)
+            ) {
+              return false;
+            }
+          }
           this.data[this.activeCollapse].selectedOrgArray.push(data);
         }
-        // }
       } else if (data.typeCode === "emp") {
         // 选择人员
-        // if (
-        //   !this.data[this.activeCollapse] ||
-        //   !this.data[this.activeCollapse]["selectedPersonArray"]
-        // ) {
-        //   this.$set(this.data, this.activeCollapse, {});
-        //   this.$set(this.data[this.activeCollapse], "selectedPersonArray", []);
-        //   this.data[this.activeCollapse]["selectedPersonArray"].push(data);
-        // } else {
         const index = this.data[
           this.activeCollapse
         ].selectedPersonArray.findIndex((item) => item.id === data.id);
         if (index !== -1) {
           this.data[this.activeCollapse].selectedPersonArray.splice(index, 1);
         } else {
+          // 父子节点不可同时选择处理
+          if (this.config.isNotAllowParentChild) {
+            if (
+              this.parentIsSelected(Node.parent, allSelectedArr) ||
+              this.childIsSelected(Node.childNodes, allSelectedArr)
+            ) {
+              return false;
+            }
+          }
           this.data[this.activeCollapse].selectedPersonArray.push(data);
         }
-        // }
       } else if (data.typeCode === "role") {
         // 选择角色
-        // if (
-        //   !this.data[this.activeCollapse] ||
-        //   !this.data[this.activeCollapse]["selectedRoleArray"]
-        // ) {
-        //   this.$set(this.data, this.activeCollapse, {});
-        //   this.$set(this.data[this.activeCollapse], "selectedRoleArray", []);
-        //   this.data[this.activeCollapse]["selectedRoleArray"].push(data);
-        // } else {
         const index = this.data[
           this.activeCollapse
         ].selectedRoleArray.findIndex((item) => item.id === data.id);
         if (index !== -1) {
           this.data[this.activeCollapse].selectedRoleArray.splice(index, 1);
         } else {
+          // 父子节点不可同时选择处理
+          if (this.config.isNotAllowParentChild) {
+            if (
+              this.parentIsSelected(Node.parent, allSelectedArr) ||
+              this.childIsSelected(Node.childNodes, allSelectedArr)
+            ) {
+              return false;
+            }
+          }
           this.data[this.activeCollapse].selectedRoleArray.push(data);
         }
-        // }
       }
     },
     // 删除已选节点，删除对应环节中对应类型的数据
@@ -472,6 +542,15 @@ export default {
       this.dialogVisible = true;
       // 获取环节数据
       this.$emit("loadLinks", (auditLinks) => {
+        if (!auditLinks || !auditLinks.length > 0) {
+          // 无环节数据，弹窗提醒
+          this.$showMessage({
+            text: "无环节数据！",
+            type: "error",
+          });
+          this.dialogVisible = false;
+          return false;
+        }
         this.auditLinks = auditLinks;
         // 设置每个环节的默认展示树类型，默认为组织树
         this.auditLinks.forEach(() => {
@@ -493,19 +572,36 @@ export default {
       let isNull = true;
       let allData = [...this.data];
       if (this.type === "select_act_party") {
+        // 选环节并选人
         if (!this.collapseRadio.length > 0) {
-          alert("未选择任何流程环节！");
+          this.$showMessage({
+            text: "未选择任何流程环节！",
+            type: "error",
+          });
           return false;
         } else {
           allData = allData.filter(
             (val, index) => this.collapseRadio.indexOf(index) !== -1
           );
         }
+      } else if (this.type === "select_act") {
+        // 选环节--单独处理事件
+        if (!this.selectionProcessData.length > 0) {
+          return false;
+        } else {
+          // 接口需要的数据格式处理
+          const arr = this.selectionProcessData.map((item) => ({ id: item }));
+          // 确认并抛出已选环节ID数组
+          this.$emit("confirm", arr, () => {
+            this.close();
+          });
+          return this.selectionProcessData;
+        }
       }
       const data = allData.map((item, index) => {
         const obj = {
           id: this.auditLinks[index].id, // 活动定义ID
-          isAppoint: false, // 是否指派活动
+          isAppoint: this.type !== "act_select_party", // 是否指派活动（是否选环节），只选人为false，选环节选人为true
           appointedParticipants: [
             ...item.selectedOrgArray,
             ...item.selectedPersonArray,
@@ -519,10 +615,10 @@ export default {
       });
       if (isNull) {
         // 未选取任何数据，弹窗提醒
-        // this.$alert("未选择任何人员或组织、角色等！", "提醒", {
-        //   confirmButtonText: "确定",
-        // });
-        alert("未选择任何人员或组织、角色等！");
+        this.$showMessage({
+          text: "未选择任何人员或组织、角色等！",
+          type: "error",
+        });
         return false;
       }
       // 关闭弹窗的回调
@@ -903,6 +999,11 @@ export default {
 
     .pre-iconfont {
       margin-right: 5px;
+    }
+
+    &.disabled {
+      color: #c0c4cc;
+      cursor: not-allowed;
     }
   }
 }

@@ -36,11 +36,11 @@ export default {
         buttonClickName: "submitProcess",
         buttonEvent: "this.submit()",
         buttonAuthConfig: {
-          buttonType: "select_act_party",
-          isNotAllowParentChild: false,
+          buttonType: "act_select_party",
+          isNotAllowParentChild: true,
           orgScope: "all",
           roleScope: "all",
-          selectPartyType: "emp,role,org,position",
+          selectPartyType: "company,emp,role,org,position",
           viewPartyType: "org,role",
         },
       },
@@ -52,7 +52,7 @@ export default {
       setTimeout(() => {
         console.log("*********************");
         open();
-      }, 1000);
+      }, 100);
     },
     loadLinks(resolve) {
       const data = [
@@ -89,6 +89,7 @@ export default {
           ],
         },
       ];
+      console.log("🚀 ~ file: App.vue ~ line 92 ~ loadLinks ~ data", data);
       resolve(data);
     },
     // 根数据
