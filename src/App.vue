@@ -13,19 +13,30 @@
       @filter="filterData"
       @confirm="confirm"
       @close="close"
-      @beforeOpen="beforeOpen"
+      :before-open="beforeOpen"
     >
       <button type="button" @click="btnClick('你个小辣鸡')">牛逼啊</button>
     </PrimetonUniversalButton>
+    <PrimetonBackButton
+      title="选择回退环节"
+      @loadData="loadLinks"
+      @confirm="confirm"
+      @close="close"
+      :before-open="beforeOpen"
+    >
+      <button type="button" @click="back('回退')">回退</button>
+    </PrimetonBackButton>
   </div>
 </template>
 <script>
 import PrimetonUniversalButton from "../packages/PrimetonUniversalButton";
+import PrimetonBackButton from "../packages/PrimetonBackButton";
 
 export default {
   name: "App",
   components: {
     PrimetonUniversalButton,
+    PrimetonBackButton,
   },
   data() {
     return {
@@ -292,6 +303,9 @@ export default {
     },
     btnClick(val) {
       console.log("🚀 🚀 🚀 🚀 🚀 🚀 牛逼 🚀 🚀 🚀 🚀 🚀 🚀", val);
+    },
+    back(val) {
+      console.log("🚀 ~ 选择回退环节", val);
     },
     filterData(keyword, type, config, resolve) {
       // 检索 keyword，获取新的树

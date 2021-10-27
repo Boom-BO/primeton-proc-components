@@ -219,10 +219,12 @@
         />
       </div>
       <div slot="footer" class="footer">
-        <span class="u-button button--small" @click="close">取消</span>
         <span class="u-button button--primary button--small" @click="comfirm">
-          确认
+          确定
         </span>
+        <span class="u-button button--primary button--small" @click="close"
+          >取消</span
+        >
       </div>
     </PrimetonDialog>
   </div>
@@ -272,6 +274,9 @@ export default {
           viewPartyType: "org,role",
         };
       },
+    },
+    beforeOpen: {
+      type: Function,
     },
     // loadTreeData: {
     //   type: Function,
@@ -344,9 +349,13 @@ export default {
     if (this.$slots.default) {
       this.slotNode = this.$slots.default[0].elm;
       on(this.slotNode, "click", () => {
-        this.$emit("beforeOpen", () => {
+        if (!this.beforeOpen) {
           this.open();
-        });
+        } else {
+          this.beforeOpen(() => {
+            this.open();
+          });
+        }
       });
     }
   },

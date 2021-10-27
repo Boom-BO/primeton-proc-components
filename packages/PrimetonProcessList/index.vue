@@ -17,7 +17,18 @@
           @click="select(item.id, true)"
         ></span>
       </span>
-      <span class="primeton-process-item-name">{{ item.name }}</span>
+      <template v-if="isBack">
+        <div class="primeton-process-list-item-container">
+          <div class="item-title">
+            <span class="title">{{ item.name || "" }}</span>
+            <span class="people">办理人：{{ item.approver || "" }}</span>
+          </div>
+          <div class="opinion">审批意见：{{ item.opinions || "" }}</div>
+        </div>
+      </template>
+      <span v-else class="primeton-process-item-name">{{
+        item.name || ""
+      }}</span>
     </div>
   </div>
 </template>
@@ -35,6 +46,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    isBack: {
+      type: Boolean,
+      default: false,
+    },
   },
   model: {
     prop: "modelVal", //指向props的参数名
@@ -51,6 +66,10 @@ export default {
   mounted() {},
   methods: {
     select(id, isSet) {
+      if (this.isBack) {
+        // 选回退环节-单选
+        this.selectionData = [];
+      }
       if (isSet) {
         this.selectionData.push(id);
       } else {
@@ -75,8 +94,8 @@ export default {
   &-item {
     position: relative;
     width: 100%;
-    height: 58px;
-    padding: 0 13px;
+    height: 70px;
+    padding: 10px 13px;
     margin-bottom: 17px;
     line-height: 58px;
     font-size: 12px;
@@ -104,9 +123,40 @@ export default {
       }
     }
 
+    &-container {
+      .item-title {
+        line-height: 20px;
+        .title {
+          display: inline-block;
+          vertical-align: text-bottom;
+          font-size: 14px;
+          font-weight: 500;
+          color: #22232f;
+        }
+        .people {
+          display: inline-block;
+          vertical-align: text-bottom;
+          margin-left: 10px;
+          font-size: 12px;
+          font-weight: 400;
+          color: #929fb1;
+        }
+      }
+      .opinion {
+        margin-top: 5px;
+        line-height: 20px;
+        font-size: 14px;
+        font-weight: 400;
+        color: #9ba9bb;
+        line-height: 20px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
     .selection {
       position: absolute;
-      top: 21px;
+      top: 26px;
       left: -25px;
       width: 16px;
       height: 16px;

@@ -3,10 +3,16 @@ import "@/styles/iconfont/iconfont.css";
 import "@/styles/index.scss";
 
 import PrimetonUniversalButton from "./PrimetonUniversalButton/index.vue";
+import PrimetonBackButton from "./PrimetonBackButton/index.vue";
 import PrimetonDialog from "./PrimetonDialog/index.vue";
 import PrimetonTag from "./PrimetonTag/index.vue";
 
-const components = [PrimetonUniversalButton, PrimetonDialog, PrimetonTag];
+const components = [
+  PrimetonUniversalButton,
+  PrimetonDialog,
+  PrimetonTag,
+  PrimetonBackButton,
+];
 
 const install = function (Vue) {
   // 判断是否安装
