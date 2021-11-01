@@ -45,10 +45,6 @@ export default {
       type: String,
       default: "标题",
     },
-    listData: {
-      type: Array,
-      default: () => [], // 环节数据
-    },
     beforeOpen: {
       type: Function,
     },
@@ -57,6 +53,8 @@ export default {
     return {
       dialogVisible: false,
       slotNode: null, // 插槽节点
+      listData: [], // 环节数据
+
       selectionProcessData: [], // 环节选择--已选的环节id
     };
   },
@@ -87,15 +85,18 @@ export default {
     open() {
       this.dialogVisible = true;
       // 获取环节数据
-      if (!this.listData || !this.listData.length > 0) {
-        // 无环节数据，弹窗提醒
-        this.$showMessage({
-          text: "无环节数据！",
-          type: "error",
-        });
-        this.dialogVisible = false;
-        return false;
-      }
+      this.$emit("loadData", (listData) => {
+        if (!listData || !listData.length > 0) {
+          // 无环节数据，弹窗提醒
+          this.$showMessage({
+            text: "无环节数据！",
+            type: "error",
+          });
+          this.dialogVisible = false;
+          return false;
+        }
+        this.listData = listData;
+      });
     },
     // 弹窗关闭事件，
     close() {
