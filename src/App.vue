@@ -19,7 +19,7 @@
     </PrimetonUniversalButton>
     <PrimetonBackButton
       title="选择回退环节"
-      @loadData="loadLinks"
+      :list-data="backLinkData"
       @confirm="confirm"
       @close="close"
       :before-open="beforeOpen"
@@ -55,6 +55,40 @@ export default {
           viewPartyType: "org,role",
         },
       },
+      backLinkData: [
+        {
+          id: "manualActivity4",
+          name: "财务审批",
+          participants: [
+            {
+              id: "1021",
+              name: "部门经理",
+              typeCode: "role",
+            },
+            {
+              id: "41",
+              name: "开发部",
+              typeCode: "org",
+            },
+          ],
+        },
+        {
+          id: "leaderActivity4",
+          name: "领导审批",
+          participants: [
+            {
+              id: "1021",
+              name: "部门经理",
+              typeCode: "role",
+            },
+            {
+              id: "41",
+              name: "开发部",
+              typeCode: "org",
+            },
+          ],
+        },
+      ],
     };
   },
   methods: {

@@ -6,6 +6,7 @@ import PrimetonUniversalButton from "./PrimetonUniversalButton/index.vue";
 import PrimetonBackButton from "./PrimetonBackButton/index.vue";
 import PrimetonDialog from "./PrimetonDialog/index.vue";
 import PrimetonTag from "./PrimetonTag/index.vue";
+import MsgRegistry from "./MessageTip/index.js";
 
 const components = [
   PrimetonUniversalButton,
@@ -20,6 +21,8 @@ const install = function (Vue) {
   components.map((component) => {
     Vue.component(component.name, component);
   });
+  Vue.prototype.$showMessage = MsgRegistry;
+  // Vue.use(MsgRegistry);
 };
 
 if (typeof window !== "undefined" && window.Vue) {

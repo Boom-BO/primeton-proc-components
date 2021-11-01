@@ -236,6 +236,7 @@ import pTag from "../PrimetonTag";
 import PrimetonDialog from "../PrimetonDialog";
 import PrimetonProcessList from "../PrimetonProcessList";
 import { on, off } from "@/utils/dom.js";
+
 export default {
   name: "PrimetonUniversalButton",
   components: {
@@ -436,7 +437,6 @@ export default {
       }
       let isTrue = false;
       for (let i = 0; i < child.length; i++) {
-        console.log("🚀  i", i);
         const cIndex = data.findIndex((item) => item.id === child[i].data.id);
         if (cIndex !== -1) {
           // 父元素已选择，不可选
