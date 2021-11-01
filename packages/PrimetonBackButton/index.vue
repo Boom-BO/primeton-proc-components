@@ -10,7 +10,7 @@
       <div class="content clearfix">
         <!--选择后退环节-->
         <PrimetonProcessList
-          v-model="selectionProcessData"
+          v-model="selectionData"
           :list-data="listData"
           is-back
         />
@@ -55,7 +55,7 @@ export default {
       slotNode: null, // 插槽节点
       listData: [], // 环节数据
 
-      selectionProcessData: [], // 环节选择--已选的环节id
+      selectionData: [], // 环节选择--已选的环节id
     };
   },
   computed: {},
@@ -102,13 +102,13 @@ export default {
     close() {
       this.dialogVisible = false;
       // 清空已选节点数据
-      this.selectionProcessData = [];
+      this.selectionData = [];
       this.$emit("close");
     },
     // 确认提交事件，格式化已选节点数据并抛出
     comfirm() {
       // 选环节--单独处理事件
-      if (!this.selectionProcessData.length > 0) {
+      if (!this.selectionData.length > 0) {
         this.$showMessage({
           text: "未选择任何环节！",
           type: "error",
@@ -116,12 +116,10 @@ export default {
         return false;
       } else {
         // 接口需要的数据格式处理
-        const arr = this.selectionProcessData.map((item) => ({ id: item }));
-        // 确认并抛出已选环节ID数组
-        this.$emit("confirm", arr, () => {
+        this.$emit("confirm", this.selectionData, () => {
           this.close();
         });
-        return this.selectionProcessData;
+        return this.selectionData;
       }
     },
   },
