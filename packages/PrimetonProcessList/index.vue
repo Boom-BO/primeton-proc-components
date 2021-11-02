@@ -7,15 +7,11 @@
     >
       <span class="selection">
         <i
-          v-if="selectionData.indexOf(item.id) !== -1"
-          @click="select(item.id, false)"
+          v-if="selectionData.findIndex((el) => el.id === item.id) !== -1"
+          @click="select(item, false)"
           class="selection-icon selection-icon-active el-icon-success"
         ></i>
-        <span
-          v-else
-          class="selection-icon"
-          @click="select(item.id, true)"
-        ></span>
+        <span v-else class="selection-icon" @click="select(item, true)"></span>
       </span>
       <template v-if="isBack">
         <div class="primeton-process-list-item-container">
@@ -65,15 +61,15 @@ export default {
   created() {},
   mounted() {},
   methods: {
-    select(id, isSet) {
+    select(item, isSet) {
       if (this.isBack) {
         // 选回退环节-单选
         this.selectionData = [];
       }
       if (isSet) {
-        this.selectionData.push(id);
+        this.selectionData.push(item);
       } else {
-        const index = this.selectionData.indexOf(id);
+        const index = this.selectionData.findIndex((el) => el.id === item.id);
         this.selectionData.splice(index, 1);
       }
       this.$emit("change", this.selectionData);

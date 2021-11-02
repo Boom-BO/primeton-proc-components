@@ -599,9 +599,9 @@ export default {
           return false;
         } else {
           // 接口需要的数据格式处理
-          const arr = this.selectionProcessData.map((item) => ({ id: item }));
+          // const arr = this.selectionProcessData.map((item) => ({ id: item }));
           // 确认并抛出已选环节ID数组
-          this.$emit("confirm", arr, () => {
+          this.$emit("confirm", this.selectionProcessData, () => {
             this.close();
           });
           return this.selectionProcessData;
