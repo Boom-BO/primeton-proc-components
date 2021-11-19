@@ -19,7 +19,7 @@
     </PrimetonUniversalButton>
     <PrimetonBackButton
       title="选择回退环节"
-      @loadData="loadLinks"
+      @loadData="loadBackLinks"
       @confirm="confirm"
       @close="close"
       :before-open="beforeOpen"
@@ -354,6 +354,22 @@ export default {
         ];
       }
       resolve(data);
+    },
+    loadBackLinks(resolve) {
+      resolve([
+        {
+          id: "1",
+          name: "财务审批",
+          approver: "王丽娟",
+          opinions: "同意",
+        },
+        {
+          id: "2",
+          name: "领导审批",
+          approver: "刘相路",
+          opinions: "拒绝",
+        },
+      ]);
     },
   },
 };

@@ -799,7 +799,7 @@ export default {
         border-radius: 50%;
         transition: all 0.3s;
         cursor: pointer;
-        // box-sizing: border-box;
+        box-sizing: content-box;
 
         // &::before {
         //   width: 8px;
