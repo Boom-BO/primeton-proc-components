@@ -4,12 +4,14 @@ import "@/styles/index.scss";
 
 import PrimetonUniversalButton from "./PrimetonUniversalButton/index.vue";
 import PrimetonBackButton from "./PrimetonBackButton/index.vue";
+import PrimetonSelectPerson from "./PrimetonSelectPerson/index.vue";
 import PrimetonDialog from "./PrimetonDialog/index.vue";
 import PrimetonTag from "./PrimetonTag/index.vue";
 import MsgRegistry from "./MessageTip/index.js";
 
 const components = [
   PrimetonUniversalButton,
+  PrimetonSelectPerson,
   PrimetonDialog,
   PrimetonTag,
   PrimetonBackButton,
