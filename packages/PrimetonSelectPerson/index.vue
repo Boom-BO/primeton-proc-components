@@ -7,6 +7,7 @@
       :visible.sync="dialogVisible"
       :title="title"
       :width="500"
+      none-mark
       @close="close"
     >
       <div class="content clearfix">

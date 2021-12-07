@@ -1,6 +1,9 @@
 <template>
   <!-- <transition name="fade"> -->
-  <div class="primeton-dialog-mask" v-if="visible">
+  <div
+    :class="['primeton-dialog-mask', noneMark && 'none-mark']"
+    v-if="visible"
+  >
     <div class="primeton-dialog" :style="{ width: dialogWidth }">
       <i class="close-btn pre-iconfont icon-pre-close" @click="closeDialog"></i>
       <div class="header">
@@ -33,6 +36,11 @@ export default {
       type: [String, Number],
       default: "30%",
     },
+    // 取消遮罩
+    noneMark: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {};
@@ -62,6 +70,14 @@ export default {
   height: 100%;
   background-color: rgba(#000000, 0.4);
   z-index: 999;
+
+  &.none-mark {
+    background-color: transparent;
+
+    .primeton-dialog {
+      box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+    }
+  }
 
   .primeton-dialog {
     position: fixed;

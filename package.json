@@ -1,6 +1,6 @@
 {
   "name": "primeton-proc-components",
-  "version": "2.2.8",
+  "version": "2.3.0",
   "private": false,
   "author": "wubo",
   "main": "lib/primeton-proc-components.common.js",
