@@ -17,6 +17,9 @@
     >
       <button type="button" @click="btnClick('你个小辣鸡')">牛逼啊</button>
     </PrimetonUniversalButton>
+    <PrimetonSelectPerson title="选人" @confirm="confirmPerson">
+      <button type="button" @click="btnClick('你个小辣鸡')">选人</button>
+    </PrimetonSelectPerson>
     <PrimetonBackButton
       title="选择回退环节"
       @loadData="loadBackLinks"
@@ -31,12 +34,14 @@
 <script>
 import PrimetonUniversalButton from "../packages/PrimetonUniversalButton";
 import PrimetonBackButton from "../packages/PrimetonBackButton";
+import PrimetonSelectPerson from "../packages/PrimetonSelectPerson";
 
 export default {
   name: "App",
   components: {
     PrimetonUniversalButton,
     PrimetonBackButton,
+    PrimetonSelectPerson,
   },
   data() {
     return {
@@ -47,7 +52,7 @@ export default {
         buttonClickName: "submitProcess",
         buttonEvent: "this.submit()",
         buttonAuthConfig: {
-          buttonType: "act_select_party",
+          buttonType: "select_party",
           isNotAllowParentChild: true,
           orgScope: "all",
           roleScope: "all",
@@ -194,6 +199,10 @@ export default {
           },
         ];
       }
+      console.log(
+        "🚀 ~ file: App.vue ~ line 210 ~ loadTreeRootData ~ rootData",
+        rootData
+      );
       resolve(rootData);
     },
     // 懒加载根据节点查询数据
@@ -295,8 +304,11 @@ export default {
       }
     },
     confirm(data, close) {
-      console.log(data, "&&&&&&&");
+      console.log(data, "已选数据!!!");
       close();
+    },
+    confirmPerson(data, obj) {
+      console.log(data, obj, "已选数据!!!");
     },
     close() {
       console.log("close*****************");

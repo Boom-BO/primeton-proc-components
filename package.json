@@ -1,6 +1,6 @@
 {
   "name": "primeton-proc-components",
-  "version": "2.2.6",
+  "version": "2.2.7",
   "private": false,
   "author": "wubo",
   "main": "lib/primeton-proc-components.common.js",
@@ -21,6 +21,7 @@
     "README.md"
   ],
   "dependencies": {
+    "axios": "^0.24.0",
     "core-js": "^3.6.5",
     "element-ui": "^2.15.6",
     "normalize.css": "^8.0.1",
