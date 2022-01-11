@@ -69,7 +69,8 @@ export default {
   width: 100%;
   height: 100%;
   background-color: rgba(#000000, 0.4);
-  z-index: 999;
+  line-height: initial;
+  z-index: 9999;
 
   &.none-mark {
     background-color: transparent;

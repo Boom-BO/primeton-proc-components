@@ -368,7 +368,7 @@ export default {
               Authorization: localStorage.getItem("uniqueId"),
             },
             method: "post",
-            url: "/org.gecom.comm.bfp.store.om.BfpParticipantTreeManager.queryRootParticipantsTreeByScope.biz.ext",
+            url: "/org.gocom.comm.bfp.store.om.BfpParticipantTreeManager.queryRootParticipantsTreeByScope.biz.ext",
             data: {
               typeCode: this.activeTreeType,
               scope: this.config.orgScope,
@@ -401,7 +401,7 @@ export default {
               Authorization: localStorage.getItem("uniqueId"),
             },
             method: "post",
-            url: "/org.gecom.comm.bfp.store.om.BfpParticipantTreeManager.queryAllChildParticipantsTree.biz.ext",
+            url: "/org.gocom.comm.bfp.store.om.BfpParticipantTreeManager.queryAllChildParticipantsTree.biz.ext",
             data: {
               typeCode: this.activeTreeType,
               participantID: node.data.id,
@@ -617,7 +617,7 @@ export default {
               Authorization: localStorage.getItem("uniqueId"),
             },
             method: "post",
-            url: "/org.gecom.comm.bfp.store.om.BfpParticipantTreeManager.queryParticipantsTreeByScopeAndName.biz.ext",
+            url: "/org.gocom.comm.bfp.store.om.BfpParticipantTreeManager.queryParticipantsTreeByScopeAndName.biz.ext",
             data: {
               typeCode: this.activeTreeType,
               participantName: this.keyword,
