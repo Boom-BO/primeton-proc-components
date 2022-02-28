@@ -224,17 +224,13 @@ import axios from "axios";
 import { Tree, Input } from "element-ui";
 
 export default {
-  name: "PrimetonSelectPerson",
+  name: "PrimetonBaseTree",
   components: {
     [Tree.name]: Tree,
     [Input.name]: Input,
     [Input.name]: Input,
   },
   props: {
-    type: {
-      type: String,
-      default: "act_select_party",
-    },
     viewPartyType: {
       type: Array,
       default: () => ["org", "role"],
@@ -525,7 +521,7 @@ export default {
     confirm() {
       const obj = {
         id: "id", // 活动定义ID
-        isAppoint: this.type !== "act_select_party", // 是否指派活动（是否选环节），只选人为false，选环节选人为true
+        isAppoint: false, // 是否指派活动（是否选环节），只选人为false，选环节选人为true
         appointedParticipants: this.data,
       };
       if (obj.appointedParticipants.length > 0) {

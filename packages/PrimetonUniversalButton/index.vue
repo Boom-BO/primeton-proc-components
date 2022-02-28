@@ -1517,21 +1517,23 @@ export default {
     background: #fff;
     border: 1px solid #d2d9e6;
   }
-  ul {
-    height: auto;
-    margin: 0;
-    margin-block-start: 0;
-    margin-block-end: 0;
-    margin-inline-start: 0;
-    margin-inline-end: 0;
-    padding-inline-start: 0;
-    li {
-      display: block;
-      text-align: left;
-    }
+}
+</style>
+<style lang="scss">
+ul {
+  height: auto;
+  margin: 0;
+  margin-block-start: 0;
+  margin-block-end: 0;
+  margin-inline-start: 0;
+  margin-inline-end: 0;
+  padding-inline-start: 0;
+  li {
+    display: block;
+    text-align: left;
   }
-  p {
-    margin: 0;
-  }
+}
+p {
+  margin: 0;
 }
 </style>

@@ -29,12 +29,24 @@
     >
       <button type="button" @click="back('回退')">回退</button>
     </PrimetonBackButton>
+    <PrimetonBaseTree
+      layout-style="tb"
+      :view-party-type="btn.buttonAuthConfig.viewPartyType.split(',')"
+      :config="btn.buttonAuthConfig"
+      :before-open="beforeOpen"
+      @loadTreeRootData="loadTreeRootData"
+      @loadTreeChildrenData="loadTreeChildrenData"
+      @filter="filterData"
+      @confirm="confirm(arguments, btn)"
+      @close="close"
+    />
   </div>
 </template>
 <script>
 import PrimetonUniversalButton from "../packages/PrimetonUniversalButton";
 import PrimetonBackButton from "../packages/PrimetonBackButton";
 import PrimetonSelectPerson from "../packages/PrimetonSelectPerson";
+import PrimetonBaseTree from "../packages/PrimetonBaseTree";
 
 export default {
   name: "App",
@@ -42,6 +54,7 @@ export default {
     PrimetonUniversalButton,
     PrimetonBackButton,
     PrimetonSelectPerson,
+    PrimetonBaseTree,
   },
   data() {
     return {
