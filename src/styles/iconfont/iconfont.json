@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "1563015",
+      "name": "减去",
+      "font_class": "pre-minus",
+      "unicode": "e676",
+      "unicode_decimal": 58998
+    },
+    {
       "icon_id": "19857045",
       "name": "角色",
       "font_class": "pre-role",

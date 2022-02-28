@@ -368,20 +368,68 @@ export default {
       resolve(data);
     },
     loadBackLinks(resolve) {
-      resolve([
-        {
-          id: "1",
-          name: "财务审批",
-          approver: "王丽娟",
-          opinions: "同意",
-        },
-        {
-          id: "2",
-          name: "领导审批",
-          approver: "刘相路",
-          opinions: "拒绝",
-        },
-      ]);
+      resolve({
+        报销单填报: [
+          {
+            approver: "燕兵哲",
+            id: "manualActivity1",
+            name: "报销单填报",
+            opinionTime: "2022-02-28 10:38:41",
+            opinions: "发起申请",
+          },
+          {
+            approver: "燕兵哲",
+            id: "manualActivity2",
+            name: "报销单填报",
+            opinionTime: "2022-02-28 10:38:41",
+            opinions: "发起申请",
+          },
+          {
+            approver: "燕兵哲",
+            id: "manualActivity3",
+            name: "报销单填报",
+            opinionTime: "2022-02-28 10:38:41",
+            opinions: "发起申请",
+          },
+          {
+            approver: "燕兵哲",
+            id: "manualActivity4",
+            name: "报销单填报",
+            opinionTime: "2022-02-28 10:38:41",
+            opinions: "发起申请",
+          },
+        ],
+        报销单填报1: [
+          {
+            approver: "燕兵哲",
+            id: "manualActivity11",
+            name: "报销单填报",
+            opinionTime: "2022-02-28 10:38:41",
+            opinions: "发起申请",
+          },
+          {
+            approver: "燕兵哲",
+            id: "manualActivity21",
+            name: "报销单填报",
+            opinionTime: "2022-02-28 10:38:41",
+            opinions: "发起申请",
+          },
+          {
+            approver: "燕兵哲",
+            id: "manualActivity3",
+            name: "报销单填报",
+            opinionTime: "2022-02-28 10:38:41",
+            opinions: "发起申请",
+          },
+          {
+            approver: "燕兵哲",
+            id: "manualActivity41",
+            name: "报销单填报",
+            opinionTime: "2022-02-28 10:38:41",
+            opinions: "发起申请",
+          },
+        ],
+      });
     },
   },
 };

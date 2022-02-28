@@ -10,7 +10,7 @@
       <div class="content clearfix">
         <!--选择后退环节-->
         <PrimetonProcessList
-          v-model="selectionData"
+          v-model="selectedLineID"
           :list-data="listData"
           is-back
         />
@@ -54,8 +54,7 @@ export default {
       dialogVisible: false,
       slotNode: null, // 插槽节点
       listData: [], // 环节数据
-
-      selectionData: [], // 环节选择--已选的环节id
+      selectedLineID: "", // 环节选择--已选的环节id
     };
   },
   computed: {},
@@ -86,7 +85,7 @@ export default {
       this.dialogVisible = true;
       // 获取环节数据
       this.$emit("loadData", (listData) => {
-        if (!listData || !listData.length > 0) {
+        if (!listData || !Object.keys(listData).length > 0) {
           // 无环节数据，弹窗提醒
           this.$showMessage({
             text: "无环节数据！",
@@ -102,13 +101,13 @@ export default {
     close() {
       this.dialogVisible = false;
       // 清空已选节点数据
-      this.selectionData = [];
+      this.selectedLineID = "";
       this.$emit("close");
     },
     // 确认提交事件，格式化已选节点数据并抛出
     comfirm() {
       // 选环节--单独处理事件
-      if (!this.selectionData.length > 0) {
+      if (this.selectedLineID === "") {
         this.$showMessage({
           text: "未选择任何环节！",
           type: "error",
@@ -116,12 +115,16 @@ export default {
         return false;
       } else {
         // 接口需要的数据格式处理
-        // const arr = this.selectionData.map((item) => ({ id: item }));
+        // const arr = this.selectedLineID.map((item) => ({ id: item }));
         // 确认并抛出已选环节ID数组
-        this.$emit("confirm", this.selectionData, () => {
+        this.$emit("confirm", this.selectedLineID, () => {
+          console.log(
+            "🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀 🚀",
+            this.selectedLineID
+          );
           this.close();
         });
-        return this.selectionData;
+        return this.selectedLineID;
       }
     },
   },

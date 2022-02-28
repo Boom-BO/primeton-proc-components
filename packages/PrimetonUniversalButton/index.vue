@@ -151,6 +151,81 @@
             </div>
             <div class="result-container">
               <div class="result-total">
+                已选（{{ selectedLength }}）
+                <span class="clear-btn" @click="clearResult(index)">清空</span>
+              </div>
+              <ul class="selected-list">
+                <template
+                  v-if="
+                    data[index] &&
+                    data[index].selectedRoleArray &&
+                    data[index].selectedRoleArray.length > 0
+                  "
+                >
+                  <li
+                    class="selected-item clearfix"
+                    v-for="item in data[index].selectedRoleArray"
+                    :key="item.id"
+                  >
+                    <div class="selected-item-icon">角色</div>
+                    <div class="selected-item-c">
+                      <p class="name">{{ item.name }}</p>
+                      <p class="ID">ID:{{ item.id }}</p>
+                    </div>
+                    <i
+                      class="pre-iconfont icon-pre-minus"
+                      @click="delItem(tagIndex, 'role')"
+                    ></i>
+                  </li>
+                </template>
+                <template
+                  v-if="
+                    data[index] &&
+                    data[index].selectedOrgArray &&
+                    data[index].selectedOrgArray.length > 0
+                  "
+                >
+                  <li
+                    class="selected-item clearfix"
+                    v-for="item in data[index].selectedOrgArray"
+                    :key="item.id"
+                  >
+                    <div class="selected-item-icon">部门</div>
+                    <div class="selected-item-c">
+                      <p class="name">{{ item.name }}</p>
+                      <p class="ID">ID:{{ item.id }}</p>
+                    </div>
+                    <i
+                      class="pre-iconfont icon-pre-minus"
+                      @click="delItem(tagIndex, 'org')"
+                    ></i>
+                  </li>
+                </template>
+                <template
+                  v-if="
+                    data[index] &&
+                    data[index].selectedPersonArray &&
+                    data[index].selectedPersonArray.length > 0
+                  "
+                >
+                  <li
+                    class="selected-item clearfix"
+                    v-for="item in data[index].selectedPersonArray"
+                    :key="item.id"
+                  >
+                    <div class="selected-item-icon">人员</div>
+                    <div class="selected-item-c">
+                      <p class="name">{{ item.name }}</p>
+                      <p class="ID">ID:{{ item.id }}</p>
+                    </div>
+                    <i
+                      class="pre-iconfont icon-pre-minus"
+                      @click="delItem(tagIndex, 'emp')"
+                    ></i>
+                  </li>
+                </template>
+              </ul>
+              <!-- <div class="result-total">
                 选中
                 <span class="clear-btn" @click="clearResult(index)">清空</span>
               </div>
@@ -207,7 +282,7 @@
                     {{ tag.name }}</p-tag
                   >
                 </div>
-              </template>
+              </template> -->
             </div>
           </el-collapse-item>
         </el-collapse>
@@ -325,6 +400,81 @@
           </div>
           <div class="result-container">
             <div class="result-total">
+              已选（{{ selectedLength }}）
+              <span class="clear-btn" @click="clearResult(0)">清空</span>
+            </div>
+            <ul class="selected-list">
+              <template
+                v-if="
+                  data[0] &&
+                  data[0].selectedRoleArray &&
+                  data[0].selectedRoleArray.length > 0
+                "
+              >
+                <li
+                  class="selected-item clearfix"
+                  v-for="item in data[0].selectedRoleArray"
+                  :key="item.id"
+                >
+                  <div class="selected-item-icon">角色</div>
+                  <div class="selected-item-c">
+                    <p class="name">{{ item.name }}</p>
+                    <p class="ID">ID:{{ item.id }}</p>
+                  </div>
+                  <i
+                    class="pre-iconfont icon-pre-minus"
+                    @click="delItem(tagIndex, 'role')"
+                  ></i>
+                </li>
+              </template>
+              <template
+                v-if="
+                  data[0] &&
+                  data[0].selectedOrgArray &&
+                  data[0].selectedOrgArray.length > 0
+                "
+              >
+                <li
+                  class="selected-item clearfix"
+                  v-for="item in data[0].selectedOrgArray"
+                  :key="item.id"
+                >
+                  <div class="selected-item-icon">部门</div>
+                  <div class="selected-item-c">
+                    <p class="name">{{ item.name }}</p>
+                    <p class="ID">ID:{{ item.id }}</p>
+                  </div>
+                  <i
+                    class="pre-iconfont icon-pre-minus"
+                    @click="delItem(tagIndex, 'org')"
+                  ></i>
+                </li>
+              </template>
+              <template
+                v-if="
+                  data[0] &&
+                  data[0].selectedPersonArray &&
+                  data[0].selectedPersonArray.length > 0
+                "
+              >
+                <li
+                  class="selected-item clearfix"
+                  v-for="item in data[0].selectedPersonArray"
+                  :key="item.id"
+                >
+                  <div class="selected-item-icon">人员</div>
+                  <div class="selected-item-c">
+                    <p class="name">{{ item.name }}</p>
+                    <p class="ID">ID:{{ item.id }}</p>
+                  </div>
+                  <i
+                    class="pre-iconfont icon-pre-minus"
+                    @click="delItem(tagIndex, 'emp')"
+                  ></i>
+                </li>
+              </template>
+            </ul>
+            <!-- <div class="result-total">
               选中
               <span class="clear-btn" @click="clearResult(0)">清空</span>
             </div>
@@ -381,7 +531,7 @@
                   {{ tag.name }}</p-tag
                 >
               </div>
-            </template>
+            </template> -->
           </div>
         </div>
       </div>
@@ -399,7 +549,7 @@
 
 <script>
 import { Tree, Collapse, CollapseItem, Input } from "element-ui";
-import pTag from "../PrimetonTag";
+// import pTag from "../PrimetonTag";
 import PrimetonDialog from "../PrimetonDialog";
 import PrimetonProcessList from "../PrimetonProcessList";
 import { on, off } from "@/utils/dom.js";
@@ -409,7 +559,7 @@ export default {
   components: {
     PrimetonDialog,
     PrimetonProcessList,
-    pTag,
+    // pTag,
     [Tree.name]: Tree,
     [Collapse.name]: Collapse,
     [CollapseItem.name]: CollapseItem,
@@ -510,7 +660,26 @@ export default {
       selectionProcessData: [], // 环节选择--已选的环节id
     };
   },
-  computed: {},
+  computed: {
+    selectedLength() {
+      const a =
+        this.data[this.activeCollapse] &&
+        this.data[this.activeCollapse].selectedRoleArray
+          ? this.data[this.activeCollapse].selectedRoleArray.length
+          : 0;
+      const b =
+        this.data[this.activeCollapse] &&
+        this.data[this.activeCollapse].selectedOrgArray
+          ? this.data[this.activeCollapse].selectedOrgArray.length
+          : 0;
+      const c =
+        this.data[this.activeCollapse] &&
+        this.data[this.activeCollapse].selectedPersonArray
+          ? this.data[this.activeCollapse].selectedPersonArray.length
+          : 0;
+      return a + b + c;
+    },
+  },
   watch: {},
   created() {},
   mounted() {
@@ -1162,21 +1331,77 @@ export default {
 
       .clear-btn {
         display: inline-block;
-        vertical-align: middle;
+        vertical-align: text-top;
         margin-left: 5px;
         padding: 0 7px;
-        line-height: 20px;
+        line-height: 18px;
         font-size: 12px;
         font-weight: 400;
         color: #575b5d;
         border: 1px solid #dedede;
-        border-radius: 10px;
+        border-radius: 4px;
         cursor: pointer;
         transition: all 0.3s;
 
         &:hover {
           color: #409eff;
           border-color: #409eff;
+        }
+      }
+    }
+
+    .selected-list {
+      margin: 0;
+      box-sizing: border-box;
+      .selected-item {
+        position: relative;
+        padding: 10px 0 6px 5px;
+        border-bottom: 1px dashed #d7dae2;
+
+        &-icon {
+          float: left;
+          width: 36px;
+          height: 36px;
+          font-size: 14px;
+          font-weight: 400;
+          color: #378af7;
+          background: #ebf3fe;
+          border: 1px solid #c6deff;
+          border-radius: 4px;
+          line-height: 36px;
+          text-align: center;
+        }
+        &-c {
+          float: left;
+          height: 100%;
+          width: calc(100% - 70px);
+          margin-left: 10px;
+          text-align: left;
+          .name {
+            font-size: 16px;
+            font-weight: 400;
+            color: #131313;
+            line-height: 20px;
+          }
+          .ID {
+            margin-top: 3px;
+            font-size: 14px;
+            font-weight: 400;
+            color: #666666;
+            line-height: 20px;
+          }
+        }
+        .icon-pre-minus {
+          position: absolute;
+          top: 20px;
+          right: 2px;
+          color: #b5b9c4;
+          cursor: pointer;
+          transition: color 0.3s;
+
+          &:hover {
+            color: #f66e6b;
+          }
         }
       }
     }
@@ -1291,6 +1516,22 @@ export default {
     padding: 10px 0;
     background: #fff;
     border: 1px solid #d2d9e6;
+  }
+  ul {
+    height: auto;
+    margin: 0;
+    margin-block-start: 0;
+    margin-block-end: 0;
+    margin-inline-start: 0;
+    margin-inline-end: 0;
+    padding-inline-start: 0;
+    li {
+      display: block;
+      text-align: left;
+    }
+  }
+  p {
+    margin: 0;
   }
 }
 </style>
