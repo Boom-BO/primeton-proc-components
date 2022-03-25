@@ -600,8 +600,9 @@ export default {
         return false;
       }
       // 关闭弹窗的回调
-      this.$emit("confirm", this.data, obj);
-      this.close();
+      this.$emit("confirm", obj, () => {
+        this.close();
+      });
     },
     // 清空所有选中节点数据
     clearResult() {

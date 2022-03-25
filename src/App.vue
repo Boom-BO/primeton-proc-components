@@ -31,13 +31,11 @@
     </PrimetonBackButton>
     <PrimetonBaseTree
       layout-style="tb"
-      :view-party-type="btn.buttonAuthConfig.viewPartyType.split(',')"
-      :config="btn.buttonAuthConfig"
       :before-open="beforeOpen"
       @loadTreeRootData="loadTreeRootData"
       @loadTreeChildrenData="loadTreeChildrenData"
       @filter="filterData"
-      @confirm="confirm(arguments, btn)"
+      @confirm="confirm"
       @close="close"
     />
   </div>
@@ -133,12 +131,12 @@ export default {
             children: [
               [
                 {
-                  id: "1-1",
+                  id: "1-1-1",
                   name: "济南政企部门",
                   typeCode: "org",
                 },
                 {
-                  id: "2-1",
+                  id: "1-2-1",
                   name: "上海产品部",
                   typeCode: "org",
                 },
@@ -152,12 +150,12 @@ export default {
             children: [
               [
                 {
-                  id: "1-1",
+                  id: "2-1-1",
                   name: "济南政企部门",
                   typeCode: "org",
                 },
                 {
-                  id: "2-1",
+                  id: "2-2-1",
                   name: "上海产品部",
                   typeCode: "org",
                 },

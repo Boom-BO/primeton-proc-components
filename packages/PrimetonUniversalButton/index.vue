@@ -725,10 +725,6 @@ export default {
     loadNode(node, resolve) {
       if (node.level === 0) {
         this.treeRootNodes[this.treeRootNodes.length] = node;
-        console.log(
-          "🚀 ~ file: index.vue ~ line 554 ~ loadNode ~ this.treeRootNodes",
-          this.treeRootNodes
-        );
         this.treeRootResolve[this.treeRootResolve.length] = resolve;
         // 加载根数据
         this.$emit(

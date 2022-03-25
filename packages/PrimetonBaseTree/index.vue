@@ -1,8 +1,31 @@
 <template>
-  <div class="content clearfix">
+  <div class="content clearfix" :class="layoutStyle">
+    <div class="search-bar clearfix" v-if="layoutStyle === 'tb'">
+      <div class="search-type">
+        <span
+          v-for="(type, tindex) in viewPartyType"
+          :key="tindex"
+          :class="type === activeTreeType && 'active'"
+          @click="switchTreeType(type)"
+        >
+          {{ type === "org" ? "机构树" : "角色树" }}
+        </span>
+      </div>
+      <div class="input-wrapper">
+        <el-input
+          v-model="keyword"
+          placeholder="请输入关键字"
+          size="mini"
+          @keyup.enter.native="search"
+        ></el-input>
+        <span class="search-text-btn" @click="search">
+          <i class="pre-iconfont icon-pre-search"></i> <span>查询</span>
+        </span>
+      </div>
+    </div>
     <div class="simple-wrapper clearfix">
       <div class="tree-container">
-        <div class="search-bar">
+        <div class="search-bar" v-if="layoutStyle !== 'tb'">
           <el-input
             v-model="keyword"
             placeholder="请输入关键字"
@@ -10,7 +33,7 @@
             @keyup.enter.native="search"
           ></el-input>
           <span class="search-text-btn" @click="search">
-            <i class="pre-iconfont icon-pre-search"></i> 查询
+            <i class="pre-iconfont icon-pre-search"></i> <span>查询</span>
           </span>
           <div class="search-type">
             <span
@@ -208,14 +231,14 @@
             </template> -->
       </div>
     </div>
-    <template slot="footer">
+    <div class="base-footer u-button-wrapper" v-if="layoutStyle === 'tb'">
       <span class="u-button button--primary button--small" @click="confirm">
         确定
       </span>
       <span class="u-button button--primary button--small" @click="close">
         取消
       </span>
-    </template>
+    </div>
   </div>
 </template>
 
@@ -231,6 +254,10 @@ export default {
     [Input.name]: Input,
   },
   props: {
+    layoutStyle: {
+      type: String,
+      default: "",
+    },
     viewPartyType: {
       type: Array,
       default: () => ["org", "role"],
@@ -240,11 +267,11 @@ export default {
       type: Object,
       default: () => {
         return {
-          buttonType: "act_select_party",
-          isNotAllowParentChild: false,
+          buttonType: "",
+          isNotAllowParentChild: true,
           orgScope: "all",
           roleScope: "all",
-          selectPartyType: "emp,role,org,position",
+          selectPartyType: "company,emp,role,org,position",
           viewPartyType: "org,role",
         };
       },
@@ -506,6 +533,7 @@ export default {
           this.data.selectedRoleArray.push(data);
         }
       }
+      console.log("🚀 🚀 🚀 🚀 🚀 11111🚀 🚀 ", this.data);
     },
     // 删除已选节点，删除对应环节中对应类型的数据
     delItem(index, type) {
@@ -522,7 +550,7 @@ export default {
       const obj = {
         id: "id", // 活动定义ID
         isAppoint: false, // 是否指派活动（是否选环节），只选人为false，选环节选人为true
-        appointedParticipants: this.data,
+        appointedParticipants: { ...this.data },
       };
       if (obj.appointedParticipants.length > 0) {
         // 未选取任何数据，弹窗提醒
@@ -533,7 +561,12 @@ export default {
         return false;
       }
       // 关闭弹窗的回调
-      this.$emit("confirm", this.data, obj);
+      this.$emit("confirm", obj, () => {
+        this.close();
+      });
+    },
+    close() {
+      this.clearResult();
       this.$emit("close");
     },
     // 清空所有选中节点数据
@@ -602,6 +635,15 @@ export default {
 .content {
   box-sizing: border-box;
 
+  .simple-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    background: #fff;
+    border: 1px solid #d2d9e6;
+  }
+
   .title-icon {
     width: 25px;
     height: 25px;
@@ -618,122 +660,7 @@ export default {
     }
   }
 
-  ::v-deep .el-collapse {
-    border: none;
-
-    .el-collapse-item {
-      border: 1px solid #d2d9e6;
-      border-radius: 5px;
-      margin-bottom: 20px;
-      overflow: hidden;
-
-      .el-collapse-item__header {
-        padding: 0 20px;
-        box-sizing: border-box;
-        font-size: 15px;
-        color: #3a3a3a;
-        border-bottom: 1px solid #fff;
-
-        &.is-active {
-          border-bottom: 1px solid #d2d9e6;
-        }
-
-        .placeholder {
-          max-width: 350px;
-          margin-left: auto;
-          font-size: 12px;
-          color: #a3a3a3;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        }
-
-        .el-collapse-item__arrow {
-          margin: 0 8px;
-        }
-
-        .collapse-item-status-label {
-          display: none;
-        }
-      }
-
-      .collapse-radio {
-        display: inline-block;
-        vertical-align: middle;
-        margin-right: 15px;
-        width: 14px;
-        height: 14px;
-        border: 1px solid #d1d1d1;
-        border-radius: 50%;
-        transition: all 0.3s;
-        cursor: pointer;
-        box-sizing: content-box;
-
-        // &::before {
-        //   width: 8px;
-        //   height: 8px;
-        //   background: #ffffff;
-        // }
-
-        // &.active {
-        //   width: 8px;
-        //   height: 8px;
-        //   background: #ffffff;
-        //   border: 4px solid #378af7;
-
-        //   // &::before {
-        //   //   border: 1px solid #979797;
-        //   // }
-        // }
-      }
-
-      .el-radio {
-        margin-right: 15px;
-
-        &__label {
-          display: none;
-        }
-      }
-
-      &.collapse-item__active {
-        border-color: #378af7;
-
-        .el-collapse-item__header {
-          position: relative;
-
-          .collapse-item-status-label {
-            display: block;
-            position: absolute;
-            right: -16px;
-            top: -12px;
-            width: 46px;
-            height: 26px;
-            background: #378af7;
-            text-align: center;
-            transform: rotate(35deg);
-            box-shadow: 0 1px 1px #ccc;
-
-            .collapse-item-check {
-              font-size: 16px;
-              font-weight: 500;
-              color: #fff;
-              transform: rotate(-30deg) translate(3px, -3px);
-            }
-          }
-
-          .collapse-radio {
-            width: 8px;
-            height: 8px;
-            background: #ffffff;
-            border: 4px solid #378af7;
-          }
-        }
-      }
-    }
-  }
-
   .tree-container {
-    float: left;
     width: 50%;
     box-sizing: border-box;
 
@@ -772,11 +699,16 @@ export default {
         font-weight: 500;
         color: #599af6;
         line-height: 22px;
+        box-sizing: border-box;
         cursor: pointer;
         z-index: 1;
 
         .icon-pre-search {
           font-size: 15px;
+          display: inline-block;
+          vertical-align: middle;
+        }
+        span {
           display: inline-block;
           vertical-align: middle;
         }
@@ -834,10 +766,12 @@ export default {
   }
 
   .result-container {
-    float: left;
+    position: absolute;
+    top: 0;
+    right: 0;
     width: 50%;
-    height: 270px;
-    padding: 5px 10px;
+    height: 100%;
+    padding: 10px;
     border-left: 1px solid #d2d9e6;
     text-align: left;
     box-sizing: border-box;
@@ -850,9 +784,10 @@ export default {
 
       .clear-btn {
         display: inline-block;
-        vertical-align: text-top;
+        vertical-align: baseline;
         margin-left: 5px;
         padding: 0 7px;
+        height: 20;
         line-height: 18px;
         font-size: 12px;
         font-weight: 400;
@@ -952,10 +887,113 @@ export default {
       cursor: not-allowed;
     }
   }
+  &.tb {
+    height: 100%;
+    width: 100%;
+    .simple-wrapper {
+      height: calc(100% - 92px);
+      padding: 10px 0;
+      .tree-container {
+        height: 100%;
+        overflow: auto;
+        ::v-deep .el-tree {
+          height: auto;
+        }
+      }
+    }
+
+    .search-bar {
+      position: relative;
+      width: 100%;
+      padding: 8px 10px;
+      box-sizing: border-box;
+      border: 1px solid #d2d9e6;
+      border-bottom: none;
+
+      .input-wrapper {
+        float: left;
+        width: calc(50% - 15px);
+        margin-left: 15px;
+
+        ::v-deep .el-input__inner {
+          padding-right: 60px;
+          background: #f8f9fe;
+        }
+
+        .search-text-btn {
+          position: absolute;
+          top: 10.5px;
+          right: 20px;
+          font-size: 12px;
+          font-weight: 500;
+          color: #599af6;
+          line-height: 22px;
+          box-sizing: border-box;
+          cursor: pointer;
+          z-index: 1;
+
+          .icon-pre-search {
+            font-size: 15px;
+            display: inline-block;
+            vertical-align: middle;
+          }
+          span {
+            display: inline-block;
+            vertical-align: middle;
+          }
+
+          &:hover {
+            color: darken(#599af6, 20%);
+          }
+        }
+      }
+
+      .search-type {
+        float: left;
+        width: 50%;
+        font-size: 12px;
+        font-weight: 500;
+        color: #747677;
+        text-align: left;
+
+        span {
+          position: relative;
+          line-height: 28px;
+          display: inline-block;
+          margin-left: 10px;
+          padding: 0 10px;
+          font-size: 16px;
+          cursor: pointer;
+
+          &:nth-of-type(1) {
+            margin-left: 0;
+          }
+
+          &:hover,
+          &.active {
+            color: #378af7;
+          }
+          &.active {
+            &::before {
+              position: absolute;
+              bottom: -8px;
+              left: 0;
+              content: "";
+              width: 100%;
+              height: 3px;
+              background-color: #378af7;
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 .u-button-wrapper {
-  display: inline-block;
+  padding: 10px 0;
+  text-align: center;
+  user-select: none;
 
   .u-button {
     display: inline-block;
@@ -978,6 +1016,10 @@ export default {
     padding: 12px 20px;
     font-size: 14px;
     border-radius: 4px;
+    margin-left: 20px;
+    &:nth-of-type(1) {
+      margin-left: 0;
+    }
 
     &.button--primary {
       color: #fff;
@@ -1032,14 +1074,6 @@ export default {
       font-size: 12px;
       border-radius: 3px;
     }
-  }
-
-  .simple-wrapper {
-    width: 100%;
-    height: 100%;
-    padding: 10px 0;
-    background: #fff;
-    border: 1px solid #d2d9e6;
   }
   ul {
     height: auto;
