@@ -898,6 +898,7 @@ export default {
         overflow: auto;
         ::v-deep .el-tree {
           height: auto;
+          max-height: 100%;
         }
       }
     }
