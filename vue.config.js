@@ -1,5 +1,5 @@
 module.exports = {
-	publicPath: 'primeton-proc-components',
+	publicPath: '/primeton-proc-components/',
 	devServer: {
 		proxy: {
 			'/org': {
